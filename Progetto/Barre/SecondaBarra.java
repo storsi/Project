@@ -1,12 +1,8 @@
 package Progetto.Barre;
 
 import java.awt.Dimension;
-import java.awt.Panel;
 import java.io.File;
 import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.Graphics;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -168,7 +164,7 @@ public class SecondaBarra extends JPanel{
         String[] elementi = null;
 
         if(categoria.equals("Database")) {
-            File folder = new File("./SqLite/Databases");
+            File folder = new File(Global.pathToDB);
 
             if(folder.exists() && folder.isDirectory()) {
                 File[] dbs = folder.listFiles();

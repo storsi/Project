@@ -1,10 +1,8 @@
 package Progetto.Barre;
 
-import javax.swing.AbstractAction;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 
 import Progetto.Main.Global;
@@ -17,7 +15,6 @@ import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.event.ActionEvent;
 
 public class TerzaBarra extends JPanel{
 
@@ -35,7 +32,7 @@ public class TerzaBarra extends JPanel{
 
         this.pa = new ParteAlta(this);
         this.ba = new BarraDiSeparazione((int)(getPreferredSize().getWidth() * 0.7), pa.getLblForeground());
-        this.pb = new ParteBassa();
+        this.pb = new ParteBassa(this);
         
         add(pa);
         add(ba);
@@ -75,6 +72,10 @@ public class TerzaBarra extends JPanel{
         pa.setVisible(false);
         pb.setVisible(false);
         ba.setVisible(false);
+    }
+
+    public void modificaDisposizioneTabelle() {
+        pb.modificaDisposizioneTabelle();
     }
 }
 
@@ -149,29 +150,57 @@ class ParteAlta extends JPanel {
 
 class ParteBassa extends JPanel {
 
-    private JPanel pnl_switch;
+    private JPanel pnl_switch, pnl_tabelle;
+    private TerzaBarra tb;
+    private boolean tabelleLunghe;
+    private String nomeDatabase;
 
-    public ParteBassa() {
+    public ParteBassa(TerzaBarra tb) {
+
+        this.tb = tb;
+        this.tabelleLunghe = false;
         
         setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.8), (int)(Global.FRAME_HEIGHT * 0.9) - Global.BARRA_DI_SEPARAZIONE_HEIGHT - 40));
         setBackground(Global.COLORE_TERZA_BARRA);
 
         pnl_switch = new JPanel(Global.FL_R_10_10);
-        pnl_switch.setPreferredSize(new Dimension((int)(getPreferredSize().getWidth() * 0.9), (int)(getPreferredSize().getHeight() * 0.1)));
-        pnl_switch.setBackground(Color.RED);
+        pnl_switch.setPreferredSize(new Dimension((int)(getPreferredSize().getWidth() * 0.94), (int)(getPreferredSize().getHeight() * 0.1)));
+        pnl_switch.setBackground(getBackground());
 
-        pnl_switch.add(new ToggleButton());
+        pnl_switch.add(new ToggleButton(tb));
+        
+        pnl_tabelle = new JPanel(Global.FL_L_30_30);
+        pnl_tabelle.setPreferredSize(new Dimension((int)(getPreferredSize().getWidth() * 0.94), (int)(getPreferredSize().getHeight() * 0.75)));
+        pnl_tabelle.setBackground(getBackground());
+
         add(pnl_switch);
+        add(pnl_tabelle);
 
         setVisible(false);
     }
 
+    public void modificaDisposizioneTabelle() {
+        tabelleLunghe = !tabelleLunghe;
+
+        if(tabelleLunghe) pnl_tabelle.setLayout(Global.FL_C_10_10);
+        else pnl_tabelle.setLayout(Global.FL_L_30_30);
+
+        popola(nomeDatabase);
+    }
+
     public void popola(String nomeDatabase) {
+        pnl_tabelle.removeAll();
+        
+
+        this.nomeDatabase = nomeDatabase;
         String[] tabelle = Global.c.getTables(nomeDatabase);
 
         for(String nome : tabelle) {
-            add(new PanelTabella(nome, false, this));
+            pnl_tabelle.add(new PanelTabella(nome, tabelleLunghe, this));
         }
+
+        pnl_tabelle.revalidate();
+        pnl_tabelle.repaint();
     }
 }
 

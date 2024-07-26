@@ -8,14 +8,23 @@ import java.awt.RenderingHints;
 
 import javax.swing.JPanel;
 
+import Progetto.Barre.TerzaBarra;
+
 public class ToggleButton extends PanelPerBtn{
 
     private Palla palla;
     private Barra barra;
     private boolean active;
+    private TerzaBarra tb;
     
-    public ToggleButton() {
+    public ToggleButton(TerzaBarra tb) {
         
+        this.tb = tb;
+
+        setUp();
+    }
+
+    private void setUp() {
         setLayout(null);
         setPreferredSize(new Dimension(70, 30));
         setBackground(getBackground());
@@ -36,6 +45,8 @@ public class ToggleButton extends PanelPerBtn{
         else palla.setLocation((int)(getPreferredSize().getWidth() - getPreferredSize().getHeight()), 0);
 
         active = !active;
+
+        tb.modificaDisposizioneTabelle();
     }
 
     @Override
@@ -82,8 +93,6 @@ class Barra extends JPanel {
         this.height = (int)(height / 1.5);
         x = width / 10;
         y = height / 6;
-
-        System.out.println(x + " " + y + " " + width + " " + height);
 
         setOpaque(false);
         setBounds(x, y, width, this.height);

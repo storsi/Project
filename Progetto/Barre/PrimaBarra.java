@@ -4,8 +4,6 @@ import java.awt.Dimension;
 
 import javax.swing.JPanel;
 
-import java.io.File;
-
 import Progetto.Main.Global;
 
 public class PrimaBarra extends JPanel{

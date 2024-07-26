@@ -1,5 +1,7 @@
 package Progetto.Comunicazione;
 
+import java.io.File;
+
 import Progetto.Main.Global;
 import Utilities.SqLite;
 
@@ -9,7 +11,8 @@ public class Comunicatore {
     private String database;
 
     public Comunicatore() {
-        sqlite = new SqLite("./SqLite/Databases/");
+        sqlite = new SqLite(Global.pathToDB);
+        
     }
     
     public String[] getTables(String nomeDB) {

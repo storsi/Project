@@ -34,14 +34,10 @@ public class PanelTabella extends PanelPerBtn{
             width = (int)(pb.getPreferredSize().getWidth() * 0.9);
             height = (int)(pb.getPreferredSize().getHeight() * 0.05);
 
-            pb.setLayout(Global.FL_C_10_10);
-
             lbl_nome.setPreferredSize(new Dimension((int)(width * 0.4), height / 2));
         } else {
             width = (int)(pb.getPreferredSize().getWidth() * 0.3);
             height = (int)(pb.getPreferredSize().getHeight() * 0.5);
-
-            pb.setLayout(Global.FL_L_30_30);
 
             lbl_nome.setPreferredSize(new Dimension(width, (int)(height * 0.1)));
             
@@ -57,17 +53,14 @@ public class PanelTabella extends PanelPerBtn{
 
     @Override
     public void onClick() {
-        System.out.println("click");
     }
 
     @Override
     public void inHover() {
-        System.out.println("In hover");
     }
 
     @Override
     public void outHover() {
-        System.out.println("Out hover");
     }
     
 }

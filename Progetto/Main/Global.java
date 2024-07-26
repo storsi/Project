@@ -25,7 +25,7 @@ public class Global {
 
     public static final int ICON_SIZE = (int)(FRAME_WIDTH * 0.03);
 
-    public static String pathToDB = "./SqLite/Databases/";
+    public static String pathToDB = "C:/Users/Matteo/OneDrive - Politecnico di Milano/Programmazione/SqLite/Databases/";
 
     //Colori
     public static final Color COLORE_PRIMA_BARRA = new Color(46,41,58);
