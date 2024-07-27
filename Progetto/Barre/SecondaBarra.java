@@ -13,7 +13,7 @@ import Progetto.Main.Global;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
 import Progetto.Main.Strumenti.TextArea;
 
-public class SecondaBarra extends JPanel{
+public class SecondaBarra extends Barra{
 
     private JLabel lbl_titolo;
     private JPanel pnl_elementi;
@@ -22,24 +22,17 @@ public class SecondaBarra extends JPanel{
     private TextArea ta_aggiungi;
     private BtnIcon btn_aggiungi, btn_conferma, btn_annulla;
     private String categoria;
-    private Dimension dim;
     
     public SecondaBarra(TerzaBarra tb, JLayeredPane pane) {
+        super(new Dimension((int)(Global.FRAME_WIDTH * 0.15), Global.FRAME_HEIGHT), Global.COLORE_SECONDA_BARRA, Global.FL_C_10_40);
 
         this.tb = tb;
         tb.setSB(this);
-        dim = new Dimension((int)(Global.FRAME_WIDTH * 0.15), Global.FRAME_HEIGHT);
-
-        setPreferredSize(dim);
-        setBackground(Global.COLORE_SECONDA_BARRA);
-        setLayout(Global.FL_C_10_40);
-
-        setUp();
     }
 
-    private void setUp() {
+    @Override
+    protected void setUp() {
         
-
         lbl_titolo = new JLabel();
         lbl_titolo.setHorizontalAlignment(SwingUtilities.CENTER);
         lbl_titolo.setPreferredSize(new Dimension((int)getPreferredSize().getWidth(), (int)(getPreferredSize().getHeight() * 0.05)));
@@ -66,31 +59,20 @@ public class SecondaBarra extends JPanel{
         add(lbl_titolo);
         add(bds);
         add(pnl_elementi);
-
     }
 
-    /**
-     * Funzione richiamata solo ed unicamente per il click di un BtnIcon di tipo "text"
-     * @param tipologia Indica il tipo di pulsante che è stato premuto
-     * @param text Indica il testo che contiene in BtnIcon
-     */
-    public void btnIconCliccato(int tipologia, String text) {
-        
-        if(categoria.equals("Database")){
-            tb.mostraDatabase(text);
-            btnIconCliccato(BtnIcon.ANNULLA);
-        }
-    }
+    @Override
+    public void btnIconClicked(BtnIcon btn) {
+        switch (btn.getTipologia()) {
+            case -1:
 
-    /**
-     * Funzione richiamata solo ed unicamente per il click di un BtnIcon di tipo "icon"
-     * @param tipologia Indica il tipo di pulsante che è stato premuto
-     */
-    public void btnIconCliccato(int tipologia) {
-        if(categoria.equals("Database")) {
+                if(btn.getCategoria().equals("Database")) {
+                    tb.mostraDatabase(btn.getMessaggio());
+                    resetAddElement();
+                }
 
-            switch (tipologia) {
-                case BtnIcon.AGGIUNGI:
+            break;
+            case BtnIcon.AGGIUNGI:
 
                     /*
                     * In questo caso è stato cliccato il pulsante aggiungi. Attiva la possibilità di 
@@ -101,42 +83,41 @@ public class SecondaBarra extends JPanel{
                     btn_annulla.setVisible(true);
                     btn_aggiungi.setVisible(false);
 
-                break;
+            break;
 
-                case BtnIcon.CONFERMA:
+            case BtnIcon.CONFERMA:
 
-                    /**
-                     * In questo caso è stato cliccato il pulsante per la conferma e quindi l'aggiunta
-                     * del nuovo database
-                     */
+                /**
+                 * In questo caso è stato cliccato il pulsante per la conferma e quindi l'aggiunta
+                 * del nuovo database
+                 */
 
-                    if(ta_aggiungi.getText().length() == 0) {
-                        resetAddElement();
-                        return;
-                    }
-
-                    File f = new File(Global.pathToDB, ta_aggiungi.getText() + ".db");
-
-                    try {
-                        if(!f.exists()) f.createNewFile();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    btnIconCliccato(-1, ta_aggiungi.getText());
-                    aggiornaPnlElementi();
-            
-                default: 
-                
-                    /**
-                     * Il default è adibito al pulsante per annullare l'aggiunta di un database e quindi 
-                     * la conseguente disabilitazione della funzione (viene richiamato anche dopo la funzione
-                     * per il pulsante aggiunta, infatti quello non possiede il "break")
-                     */
+                if(ta_aggiungi.getText().length() == 0) {
                     resetAddElement();
-                
-                break;
-            }
+                    return;
+                }
+
+                File f = new File(Global.pathToDB, ta_aggiungi.getText() + ".db");
+
+                try {
+                    if(!f.exists()) f.createNewFile();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                tb.mostraDatabase(ta_aggiungi.getText());
+                aggiornaPnlElementi();
+        
+            default: 
+            
+                /**
+                 * Il default è adibito al pulsante per annullare l'aggiunta di un database e quindi 
+                 * la conseguente disabilitazione della funzione (viene richiamato anche dopo la funzione
+                 * per il pulsante aggiunta, infatti quello non possiede il "break")
+                 */
+                resetAddElement();
+            
+            break;
         }
     }
 

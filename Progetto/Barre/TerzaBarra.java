@@ -16,7 +16,7 @@ import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
-public class TerzaBarra extends JPanel{
+public class TerzaBarra extends Barra{
 
     private ParteAlta pa;
     private BarraDiSeparazione ba;
@@ -25,11 +25,11 @@ public class TerzaBarra extends JPanel{
     private String nome;
     
     public TerzaBarra() {
+        super(new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT), Global.COLORE_TERZA_BARRA,Global.FL_C_0_0);
+    }
 
-        setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT));
-        setBackground(Global.COLORE_TERZA_BARRA);
-        setLayout(Global.FL_C_0_0);
-
+    @Override
+    protected void setUp() {
         this.pa = new ParteAlta(this);
         this.ba = new BarraDiSeparazione((int)(getPreferredSize().getWidth() * 0.7), pa.getLblForeground());
         this.pb = new ParteBassa(this);
@@ -37,6 +37,22 @@ public class TerzaBarra extends JPanel{
         add(pa);
         add(ba);
         add(pb);
+    }
+
+    @Override
+    public void btnIconClicked(BtnIcon btn) {
+
+        switch (btn.getTipologia()) {
+            case BtnIcon.ELIMINA:
+
+                String messaggio = "Stai eliminando il database \"" + nome + "\" sei sicuro di continuare? Ogni informazione sarà perduta";
+                getParent().add(new PopUp(Global.AVVISO_WIDTH, Global.AVVISO_HEIGHT, PopUp.ELIMINA_DATABASE, messaggio, this), JLayeredPane.PALETTE_LAYER);
+
+            break;
+        
+            default:
+                break;
+        }
     }
 
     public void mostraDatabase(String nome) {
@@ -54,13 +70,6 @@ public class TerzaBarra extends JPanel{
 
     public void setSB(SecondaBarra sb) {
         this.sb = sb;
-    }
-
-    public void btnIconPressed(int tipologia) {
-        if(tipologia == BtnIcon.ELIMINA) {
-            String messaggio = "Stai eliminando il database \"" + nome + "\" sei sicuro di continuare? Ogni informazione sarà perduta";
-            getParent().add(new PopUp(Global.AVVISO_WIDTH, Global.AVVISO_HEIGHT, PopUp.ELIMINA_DATABASE, messaggio, this), JLayeredPane.PALETTE_LAYER);
-        }
     }
 
     public void eliminaDatabase() {

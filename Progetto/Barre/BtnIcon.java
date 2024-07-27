@@ -31,16 +31,16 @@ public class BtnIcon extends LabelPerBtn{
     private int tipologia, iconSize;
     private Icon icon;
     private Informazione info;
-    private PrimaBarra pb;
     private SecondaBarra sb;
-    private TerzaBarra tb;
     private PopUp avviso;
-    
-    public BtnIcon(int tipologia, PrimaBarra pb) {
+    private Barra barra;
 
-        this.pb = pb;
+    public BtnIcon(int tipologia, Barra barra) {
+
+        this.barra = barra;
         iconSize = Global.ICON_SIZE;
-        setUpIcon(tipologia, NOMI_PRIMA_BARRA);
+        String[] nomi = (barra instanceof PrimaBarra) ? NOMI_PRIMA_BARRA : NOMI_TERZA_BARRA;
+        setUpIcon(tipologia, nomi);
     }
 
     public BtnIcon(int tipologia, SecondaBarra sb, String categoria) {
@@ -54,13 +54,6 @@ public class BtnIcon extends LabelPerBtn{
             iconSize = 20;
             setUpIcon(tipologia, NOMI_TERZA_BARRA);
         }
-    }
-
-    public BtnIcon(int tipologia, TerzaBarra tb) {
-
-        this.tb = tb;
-        iconSize = Global.ICON_SIZE;
-        setUpIcon(tipologia, NOMI_TERZA_BARRA);
     }
 
     public BtnIcon(int tipologia, PopUp avviso) {
@@ -95,6 +88,18 @@ public class BtnIcon extends LabelPerBtn{
         setIcon(icon);
     }
 
+    public int getTipologia() {
+        return tipologia;
+    }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public String getMessaggio() {
+        return messaggio;
+    }
+
     @Override
     public void onClick() {
         exitedHover();
@@ -103,23 +108,23 @@ public class BtnIcon extends LabelPerBtn{
         switch (tipologia) {
             case 0:
 
-                if(pb != null) pb.btnIconCliccato(tipologia);
+                if(barra != null) barra.btnIconClicked(this);
             break;
 
             case 1:
             break;
 
-            case 2: tb.btnIconPressed(tipologia);
+            case 2: barra.btnIconClicked(this);
             break;
 
             case 3:
             case 4: 
             case 5: 
-                if(sb != null) sb.btnIconCliccato(tipologia);
+                if(sb != null) sb.btnIconClicked(this);
                 else if(avviso != null) avviso.scelta(ANNULLA - tipologia);
             break;
         
-            default: sb.btnIconCliccato(-1, messaggio);
+            default: sb.btnIconClicked(this);
             break;
         }
     }
