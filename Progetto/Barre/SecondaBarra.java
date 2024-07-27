@@ -5,9 +5,9 @@ import java.io.File;
 import java.awt.Color;
 
 import javax.swing.JPanel;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
-import javax.swing.JLayeredPane;
 
 import Progetto.Main.Global;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
@@ -16,22 +16,41 @@ import Progetto.Main.Strumenti.TextArea;
 public class SecondaBarra extends Barra{
 
     private JLabel lbl_titolo;
-    private JPanel pnl_elementi;
+    private JPanel pnl_elementi, pnl_resize;
     private BarraDiSeparazione bds;
     private TerzaBarra tb;
     private TextArea ta_aggiungi;
-    private BtnIcon btn_aggiungi, btn_conferma, btn_annulla;
+    private BtnIcon btn_aggiungi, btn_conferma, btn_annulla, btn_resize;
     private String categoria;
+    private boolean open;
+    private Dimension dim_barra, dim_pnlResize;
     
-    public SecondaBarra(TerzaBarra tb, JLayeredPane pane) {
-        super(new Dimension((int)(Global.FRAME_WIDTH * 0.15), Global.FRAME_HEIGHT), Global.COLORE_SECONDA_BARRA, Global.FL_C_10_40);
+    public SecondaBarra(TerzaBarra tb) {
+        super(Global.COLORE_SECONDA_BARRA, Global.FL_C_10_10, true);
+
+        dim_barra = new Dimension((int)(Global.FRAME_WIDTH * 0.15), Global.FRAME_HEIGHT);
+
+        setPreferredSize(dim_barra);
+
+        dim_pnlResize = new Dimension((int)getPreferredSize().getWidth(), (int)(getPreferredSize().getHeight() * 0.05));
+
 
         this.tb = tb;
         tb.setSB(this);
+        open = true;
+
+        setUp();
     }
 
     @Override
     protected void setUp() {
+        System.out.println(dim_pnlResize);
+
+        int iconSize = 20;
+        pnl_resize = new JPanel(Global.FL_R_10_10);
+        pnl_resize.setPreferredSize(dim_pnlResize);
+        pnl_resize.setBackground(getBackground());
+        btn_resize = new BtnIcon(BtnIcon.RIDUCI_BARRA, this, iconSize);
         
         lbl_titolo = new JLabel();
         lbl_titolo.setHorizontalAlignment(SwingUtilities.CENTER);
@@ -56,8 +75,11 @@ public class SecondaBarra extends Barra{
         ta_aggiungi.setVisible(false);
 
 
+        pnl_resize.add(btn_resize);
+        add(pnl_resize);
         add(lbl_titolo);
         add(bds);
+        add(Box.createVerticalStrut(50));
         add(pnl_elementi);
     }
 
@@ -196,5 +218,36 @@ public class SecondaBarra extends Barra{
         f.delete();
 
         aggiornaPnlElementi();
+    }
+
+    @Override
+    protected void anima() {
+
+        if(open) btn_resize.changeTipologia(BtnIcon.ALLARGA_BARRA);
+        else btn_resize.changeTipologia(BtnIcon.RIDUCI_BARRA);
+
+        pnl_elementi.setVisible(!open && categoria != null);
+        bds.setVisible(!open && categoria != null);
+        lbl_titolo.setVisible(!open && categoria != null);
+
+        int w = (int)dim_barra.getWidth();
+
+        if(open) w -= 10;
+        else w += 10;
+
+        if(open && w <= 40) {
+            w = 40;
+            stopAnimation();
+            open = false;
+        } else if(!open && w > (int)(Global.FRAME_WIDTH * 0.15)) {
+            w = (int)(Global.FRAME_WIDTH * 0.15);
+            stopAnimation();            
+            open = true;
+        }
+
+        dim_pnlResize.setSize(w, (int)dim_pnlResize.getHeight());
+        dim_barra.setSize(w, (int)dim_barra.getHeight());
+        revalidate();
+        repaint();
     }
 }

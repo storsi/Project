@@ -25,7 +25,10 @@ public class TerzaBarra extends Barra{
     private String nome;
     
     public TerzaBarra() {
-        super(new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT), Global.COLORE_TERZA_BARRA,Global.FL_C_0_0);
+        super(Global.COLORE_TERZA_BARRA,Global.FL_C_0_0, true);
+        setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT));
+
+        setUp();
     }
 
     @Override
@@ -85,6 +88,11 @@ public class TerzaBarra extends Barra{
 
     public void modificaDisposizioneTabelle() {
         pb.modificaDisposizioneTabelle();
+    }
+
+    @Override
+    protected void anima() {
+        
     }
 }
 

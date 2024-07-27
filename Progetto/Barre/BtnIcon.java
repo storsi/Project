@@ -43,6 +43,14 @@ public class BtnIcon extends LabelPerBtn{
         setUpIcon(tipologia, nomi);
     }
 
+    public BtnIcon(int tipologia, Barra barra, int iconSize) {
+
+        this.barra = barra;
+        this.iconSize = iconSize;
+        String[] nomi = (barra instanceof PrimaBarra) ? NOMI_PRIMA_BARRA : NOMI_TERZA_BARRA;
+        setUpIcon(tipologia, nomi);
+    }
+
     public BtnIcon(int tipologia, SecondaBarra sb, String categoria) {
 
         this.sb = sb;
@@ -100,6 +108,10 @@ public class BtnIcon extends LabelPerBtn{
         return messaggio;
     }
 
+    public void changeTipologia(int nuovaTipologia) {
+        setUpIcon(nuovaTipologia, NOMI_TERZA_BARRA);
+    }
+
     @Override
     public void onClick() {
         exitedHover();
@@ -122,6 +134,11 @@ public class BtnIcon extends LabelPerBtn{
             case 5: 
                 if(sb != null) sb.btnIconClicked(this);
                 else if(avviso != null) avviso.scelta(ANNULLA - tipologia);
+            break;
+
+            case 7: 
+            case 8:
+                barra.startAnimation();
             break;
         
             default: sb.btnIconClicked(this);

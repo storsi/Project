@@ -20,7 +20,7 @@ public class Panel extends JLayeredPane{
         setLayout(Global.FL_C_0_0);
 
         tb = new TerzaBarra();
-        sb = new SecondaBarra(tb, this);
+        sb = new SecondaBarra(tb);
         pb = new PrimaBarra(sb);
 
         add(pb, JLayeredPane.DEFAULT_LAYER);
