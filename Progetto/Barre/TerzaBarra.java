@@ -23,10 +23,13 @@ public class TerzaBarra extends Barra{
     private ParteBassa pb;
     private SecondaBarra sb;
     private String nome;
+    private Dimension dim;
     
     public TerzaBarra() {
         super(Global.COLORE_TERZA_BARRA,Global.FL_C_0_0, true);
-        setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT));
+        dim = new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT);
+
+        setPreferredSize(dim);
 
         setUp();
     }
@@ -40,6 +43,13 @@ public class TerzaBarra extends Barra{
         add(pa);
         add(ba);
         add(pb);
+    }
+
+    public void modificaDimensione(int modifica) {
+        dim.setSize(getWidth() + modifica, getHeight());
+
+        pa.updateDimension();
+        pb.updateDimension();
     }
 
     @Override
@@ -101,13 +111,15 @@ class ParteAlta extends JPanel {
     private TerzaBarra tb;
     private JLabel lbl_nomeDatabase;
     private JPanel pnl_pulsanti, pnl_nome, pnl_vuoto;
+    private Dimension dim;
 
     public ParteAlta(TerzaBarra tb) {
 
         this.tb = tb;
 
         setLayout(Global.BL_0_0);
-        setPreferredSize(new Dimension((int)tb.getPreferredSize().getWidth(), (int)(tb.getPreferredSize().getHeight() * 0.15)));
+        dim = new Dimension((int)tb.getPreferredSize().getWidth(), (int)(tb.getPreferredSize().getHeight() * 0.15));
+        setPreferredSize(dim);
         setOpaque(false);
         setVisible(false);
 
@@ -151,6 +163,10 @@ class ParteAlta extends JPanel {
         return lbl_nomeDatabase.getForeground();
     }
 
+    public void updateDimension() {
+        dim.setSize(tb.getPreferredSize().getWidth(), dim.getHeight());
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
         //QUESTO PERMETTE LA SFUMATURA DALL'ALTO AL BASSO
@@ -171,23 +187,27 @@ class ParteBassa extends JPanel {
     private TerzaBarra tb;
     private boolean tabelleLunghe;
     private String nomeDatabase;
+    private Dimension dim_pb, dim_pnlSwitch, dim_pnlTabelle;
 
     public ParteBassa(TerzaBarra tb) {
 
         this.tb = tb;
         this.tabelleLunghe = false;
-        
-        setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.8), (int)(Global.FRAME_HEIGHT * 0.9) - Global.BARRA_DI_SEPARAZIONE_HEIGHT - 40));
+        dim_pb = new Dimension((int)(Global.FRAME_WIDTH * 0.8), (int)(Global.FRAME_HEIGHT * 0.9) - Global.BARRA_DI_SEPARAZIONE_HEIGHT - 40);
+        dim_pnlSwitch = new Dimension((int)(tb.getPreferredSize().getWidth()), (int)(tb.getPreferredSize().getHeight() * 0.06));
+        dim_pnlTabelle = new Dimension((int)(tb.getPreferredSize().getWidth() * 0.94), (int)(tb.getPreferredSize().getHeight() * 0.75));
+
+        setPreferredSize(dim_pb);
         setBackground(Global.COLORE_TERZA_BARRA);
 
         pnl_switch = new JPanel(Global.FL_R_10_10);
-        pnl_switch.setPreferredSize(new Dimension((int)(getPreferredSize().getWidth() * 0.94), (int)(getPreferredSize().getHeight() * 0.1)));
+        pnl_switch.setPreferredSize(dim_pnlSwitch);
         pnl_switch.setBackground(getBackground());
 
         pnl_switch.add(new ToggleButton(tb));
         
         pnl_tabelle = new JPanel(Global.FL_L_30_30);
-        pnl_tabelle.setPreferredSize(new Dimension((int)(getPreferredSize().getWidth() * 0.94), (int)(getPreferredSize().getHeight() * 0.75)));
+        pnl_tabelle.setPreferredSize(dim_pnlTabelle);
         pnl_tabelle.setBackground(getBackground());
 
         add(pnl_switch);
@@ -203,6 +223,12 @@ class ParteBassa extends JPanel {
         else pnl_tabelle.setLayout(Global.FL_L_30_30);
 
         popola(nomeDatabase);
+    }
+
+    public void updateDimension() {
+        dim_pb.setSize(tb.getPreferredSize().getWidth(), dim_pb.getHeight());
+        dim_pnlSwitch.setSize(tb.getPreferredSize().getWidth(), dim_pnlSwitch.getHeight());
+        dim_pnlTabelle.setSize(tb.getPreferredSize().getWidth(), dim_pnlTabelle.getHeight());
     }
 
     public void popola(String nomeDatabase) {

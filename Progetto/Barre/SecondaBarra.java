@@ -230,20 +230,21 @@ public class SecondaBarra extends Barra{
         bds.setVisible(!open && categoria != null);
         lbl_titolo.setVisible(!open && categoria != null);
 
-        int w = (int)dim_barra.getWidth();
-
-        if(open) w -= 10;
-        else w += 10;
+        int modifica = (open) ? -10 : 10, w = (int)dim_barra.getWidth() + modifica;
 
         if(open && w <= 40) {
+            modifica += 40 - w;
             w = 40;
             stopAnimation();
             open = false;
         } else if(!open && w > (int)(Global.FRAME_WIDTH * 0.15)) {
+            modifica -= w - (int)(Global.FRAME_WIDTH * 0.15);
             w = (int)(Global.FRAME_WIDTH * 0.15);
             stopAnimation();            
             open = true;
         }
+
+        tb.modificaDimensione(-modifica);
 
         dim_pnlResize.setSize(w, (int)dim_pnlResize.getHeight());
         dim_barra.setSize(w, (int)dim_barra.getHeight());
