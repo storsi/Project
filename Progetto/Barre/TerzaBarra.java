@@ -15,6 +15,7 @@ import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.util.ArrayList;
 
 public class TerzaBarra extends Barra{
 
@@ -188,11 +189,14 @@ class ParteBassa extends JPanel {
     private boolean tabelleLunghe;
     private String nomeDatabase;
     private Dimension dim_pb, dim_pnlSwitch, dim_pnlTabelle;
+    private ArrayList<PanelTabella> pnlTebelle;
 
     public ParteBassa(TerzaBarra tb) {
 
         this.tb = tb;
         this.tabelleLunghe = false;
+        pnlTebelle = new ArrayList<PanelTabella>();
+
         dim_pb = new Dimension((int)(Global.FRAME_WIDTH * 0.8), (int)(Global.FRAME_HEIGHT * 0.9) - Global.BARRA_DI_SEPARAZIONE_HEIGHT - 40);
         dim_pnlSwitch = new Dimension((int)(tb.getPreferredSize().getWidth()), (int)(tb.getPreferredSize().getHeight() * 0.06));
         dim_pnlTabelle = new Dimension((int)(tb.getPreferredSize().getWidth() * 0.94), (int)(tb.getPreferredSize().getHeight() * 0.75));
@@ -204,7 +208,7 @@ class ParteBassa extends JPanel {
         pnl_switch.setPreferredSize(dim_pnlSwitch);
         pnl_switch.setBackground(getBackground());
 
-        pnl_switch.add(new ToggleButton(tb));
+        pnl_switch.add(new ToggleButton(tb, Global.getIcon("Quadrato.png", Global.ICON_SIZE), Global.getIcon("Quadrato.png", Global.ICON_SIZE)));
         
         pnl_tabelle = new JPanel(Global.FL_L_30_30);
         pnl_tabelle.setPreferredSize(dim_pnlTabelle);
@@ -222,7 +226,7 @@ class ParteBassa extends JPanel {
         if(tabelleLunghe) pnl_tabelle.setLayout(Global.FL_C_10_10);
         else pnl_tabelle.setLayout(Global.FL_L_30_30);
 
-        popola(nomeDatabase);
+        aggiorna(tabelleLunghe);
     }
 
     public void updateDimension() {
@@ -231,15 +235,26 @@ class ParteBassa extends JPanel {
         dim_pnlTabelle.setSize(tb.getPreferredSize().getWidth(), dim_pnlTabelle.getHeight());
     }
 
+    private void aggiorna(boolean tabelleLunghe) {
+        
+        for(int i = 0; i < pnlTebelle.size(); i++) {
+            pnlTebelle.get(i).setDimension(tabelleLunghe);
+        }
+    }
+
     public void popola(String nomeDatabase) {
         pnl_tabelle.removeAll();
         
+        PanelTabella pnlTab;
 
         this.nomeDatabase = nomeDatabase;
         String[] tabelle = Global.c.getTables(nomeDatabase);
 
         for(String nome : tabelle) {
-            pnl_tabelle.add(new PanelTabella(nome, tabelleLunghe, this));
+            pnlTab = new PanelTabella(nome, tabelleLunghe, this); 
+                
+            pnl_tabelle.add(pnlTab);
+            pnlTebelle.add(pnlTab);
         }
 
         pnl_tabelle.revalidate();

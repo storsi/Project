@@ -28,12 +28,14 @@ public class BtnIcon extends LabelPerBtn{
                                                     "Conferma", "Annulla", "Prosegui", "Riduci", "Allarga"};
 
     private String messaggio, categoria;
-    private int tipologia, iconSize;
+    private int tipologia, iconSize, profonditaMax;
     private Icon icon;
     private Informazione info;
     private SecondaBarra sb;
     private PopUp avviso;
     private Barra barra;
+    private boolean infoActive;
+    private Component parent;
 
     public BtnIcon(int tipologia, Barra barra) {
 
@@ -90,6 +92,8 @@ public class BtnIcon extends LabelPerBtn{
         this.messaggio = arrayIcone[tipologia];
         this.icon = Global.getIcon(arrayIcone[tipologia].replace(' ', '_') + ".png", iconSize);
         this.info = new Informazione(messaggio);
+        this.infoActive = false;
+        this.parent = this;
         super.setTwoSecondsHover(true);
 
         setPreferredSize(new Dimension(iconSize, iconSize));
@@ -146,20 +150,10 @@ public class BtnIcon extends LabelPerBtn{
         }
     }
 
-    @Override
-    public void hover2sec() {
-        int x, profonditaMax = 0, profondita;
-        Component parent = this, element = this;
-
-        Point screenPoint = MouseInfo.getPointerInfo().getLocation();
-        SwingUtilities.convertPointFromScreen(screenPoint, getParent().getParent().getParent().getParent());
-
-        int w = messaggio.length() * 9, h = (int)(Global.ICON_SIZE * 0.5);
-
-        if(screenPoint.x + w > Global.FRAME_WIDTH) x = screenPoint.x - (screenPoint.x + w - Global.FRAME_WIDTH + 10);
-        else x = screenPoint.x;
-
-        info.setBounds(x, screenPoint.y - h, w, h);
+    private void setInfo() {
+        int profondita;
+        Component element = this;
+        profonditaMax = 0;
 
         do{
             parent = parent.getParent();
@@ -171,7 +165,25 @@ public class BtnIcon extends LabelPerBtn{
 
             element = element.getParent();
         }while(profondita >= 0);
-        
+
+        infoActive = true;
+    }
+
+    @Override
+    public void hover2sec() {
+        int x;
+
+        Point screenPoint = MouseInfo.getPointerInfo().getLocation();
+        SwingUtilities.convertPointFromScreen(screenPoint, getParent().getParent().getParent().getParent());
+
+        int w = messaggio.length() * 9, h = (int)(Global.ICON_SIZE * 0.5);
+
+        if(screenPoint.x + w > Global.FRAME_WIDTH) x = screenPoint.x - (screenPoint.x + w - Global.FRAME_WIDTH + 10);
+        else x = screenPoint.x;
+
+        info.setBounds(x, screenPoint.y - h, w, h);
+
+        if(!infoActive) setInfo();
 
         parent.getParent().add(info, Integer.valueOf(profonditaMax + 100));
     }
@@ -180,14 +192,8 @@ public class BtnIcon extends LabelPerBtn{
     public void exitedHover() {
 
         if(info != null) {
-
-            Component parent = this;
-
-            do{
-                parent = parent.getParent();
-            }while(!(parent.getParent() instanceof JLayeredPane));
-            
             parent.getParent().remove(info);
+            parent.getParent().revalidate();
             parent.getParent().repaint();
         }
     }

@@ -7,7 +7,7 @@ public class Frame extends JFrame{
     public Frame() {
 
         setTitle("Il miglior software della storia");
-        setResizable(false);
+        //setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         add(new Panel());

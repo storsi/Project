@@ -53,17 +53,16 @@ public abstract class LabelPerBtn extends JLabel implements MouseListener{
                 
                 synchronized(thread) {
                     try {
+                        
                         thread.wait();
+                        
+                        if(isActive) thread.wait(800);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
 
-                timeEntered = System.currentTimeMillis();
-                while(isActive && System.currentTimeMillis() - timeEntered < 800);
-
                 if(isActive) hover2sec();
-                
             }
 
         });

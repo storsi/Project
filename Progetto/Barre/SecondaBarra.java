@@ -44,7 +44,6 @@ public class SecondaBarra extends Barra{
 
     @Override
     protected void setUp() {
-        System.out.println(dim_pnlResize);
 
         int iconSize = 20;
         pnl_resize = new JPanel(Global.FL_R_10_10);
@@ -57,6 +56,7 @@ public class SecondaBarra extends Barra{
         lbl_titolo.setPreferredSize(new Dimension((int)getPreferredSize().getWidth(), (int)(getPreferredSize().getHeight() * 0.05)));
         lbl_titolo.setForeground(Color.WHITE);
         lbl_titolo.setFont(Global.FONT_GRANDE);
+        lbl_titolo.setVisible(false);
 
         bds = new BarraDiSeparazione((int)(getPreferredSize().getWidth() * 0.7), lbl_titolo.getForeground());
 
@@ -67,6 +67,7 @@ public class SecondaBarra extends Barra{
 
         pnl_elementi.setPreferredSize(new Dimension(w, h));
         pnl_elementi.setBackground(Global.COLORE_SECONDA_BARRA);
+        pnl_elementi.setVisible(false);
 
         ta_aggiungi = new TextArea(Global.FONT_MEDIO, new Dimension(180, 28));
         ta_aggiungi.changeColor(Global.COLORE_SECONDA_BARRA, Color.WHITE);
@@ -152,6 +153,8 @@ public class SecondaBarra extends Barra{
         this.categoria = categoria;
 
         bds.setVisible(true);
+        lbl_titolo.setVisible(true);
+        pnl_elementi.setVisible(true);
         lbl_titolo.setText(categoria.toUpperCase());
 
         aggiornaPnlElementi();
@@ -223,25 +226,38 @@ public class SecondaBarra extends Barra{
     @Override
     protected void anima() {
 
-        if(open) btn_resize.changeTipologia(BtnIcon.ALLARGA_BARRA);
-        else btn_resize.changeTipologia(BtnIcon.RIDUCI_BARRA);
-
-        pnl_elementi.setVisible(!open && categoria != null);
-        bds.setVisible(!open && categoria != null);
-        lbl_titolo.setVisible(!open && categoria != null);
-
         int modifica = (open) ? -10 : 10, w = (int)dim_barra.getWidth() + modifica;
 
-        if(open && w <= 40) {
-            modifica += 40 - w;
-            w = 40;
-            stopAnimation();
-            open = false;
-        } else if(!open && w > (int)(Global.FRAME_WIDTH * 0.15)) {
-            modifica -= w - (int)(Global.FRAME_WIDTH * 0.15);
-            w = (int)(Global.FRAME_WIDTH * 0.15);
-            stopAnimation();            
-            open = true;
+        if(open) {
+            btn_resize.changeTipologia(BtnIcon.ALLARGA_BARRA);
+
+            pnl_elementi.setVisible(false);
+            bds.setVisible(false);
+            lbl_titolo.setVisible(false);
+
+            if(w <= 40) {
+                modifica += 40 - w;
+                w = 40;
+                stopAnimation();
+                open = false;
+            }
+        } else {
+            btn_resize.changeTipologia(BtnIcon.RIDUCI_BARRA);
+
+            if(w > (int)(Global.FRAME_WIDTH * 0.15)) {
+                modifica -= w - (int)(Global.FRAME_WIDTH * 0.15);
+                w = (int)(Global.FRAME_WIDTH * 0.15);
+                stopAnimation();            
+                open = true;
+
+                if(categoria != null) {
+                    pnl_elementi.setVisible(true);
+                    bds.setVisible(true);
+                    lbl_titolo.setVisible(true);
+                }
+
+                
+            }
         }
 
         tb.modificaDimensione(-modifica);

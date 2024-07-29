@@ -6,6 +6,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
+import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import Progetto.Barre.TerzaBarra;
@@ -16,10 +17,13 @@ public class ToggleButton extends PanelPerBtn{
     private Barra barra;
     private boolean active;
     private TerzaBarra tb;
+    private Icon left, right;
     
-    public ToggleButton(TerzaBarra tb) {
+    public ToggleButton(TerzaBarra tb, Icon left, Icon right) {
         
         this.tb = tb;
+        this.left = left;
+        this.right = right;
 
         setUp();
     }

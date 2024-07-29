@@ -11,9 +11,13 @@ public class BarraDiSeparazione extends JPanel{
     
     public BarraDiSeparazione(int width, Color colore) {
 
-        setPreferredSize(new Dimension(width, Global.BARRA_DI_SEPARAZIONE_HEIGHT));
+        setWidth(width);
         setBackground(colore);
 
         setVisible(false);
+    }
+
+    public void setWidth(int width) {
+        setPreferredSize(new Dimension(width, Global.BARRA_DI_SEPARAZIONE_HEIGHT));
     }
 }
