@@ -210,6 +210,8 @@ public class SecondaBarra extends Barra{
         btn_conferma.setVisible(false);
         btn_annulla.setVisible(false);
         btn_aggiungi.setVisible(true);
+
+        repaint();
     } 
 
     /**
@@ -225,6 +227,7 @@ public class SecondaBarra extends Barra{
 
     @Override
     protected void anima() {
+        btn_resize.exitedHover();
 
         int modifica = (open) ? -10 : 10, w = (int)dim_barra.getWidth() + modifica;
 
@@ -255,8 +258,6 @@ public class SecondaBarra extends Barra{
                     bds.setVisible(true);
                     lbl_titolo.setVisible(true);
                 }
-
-                
             }
         }
 

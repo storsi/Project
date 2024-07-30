@@ -17,6 +17,7 @@ import java.awt.RenderingHints;
 
 import Progetto.Main.Strumenti.LabelPerBtn;
 import Progetto.Main.Global;
+import Progetto.Main.Panel;
 
 public class BtnIcon extends LabelPerBtn{
 
@@ -36,6 +37,7 @@ public class BtnIcon extends LabelPerBtn{
     private Barra barra;
     private boolean infoActive;
     private Component parent;
+    private Panel panel;
 
     public BtnIcon(int tipologia, Barra barra) {
 
@@ -157,16 +159,16 @@ public class BtnIcon extends LabelPerBtn{
 
         do{
             parent = parent.getParent();
-        }while(!(parent.getParent() instanceof JLayeredPane));
+        }while(!(parent.getClass().getSimpleName().equals("Panel")));
+
+        panel = (Panel)parent;
 
         do{
-            profondita = ((JLayeredPane)parent.getParent()).getLayer(element);
+            profondita = ((JLayeredPane)panel).getLayer(element);
             profonditaMax = (profondita > profonditaMax) ? profondita : profonditaMax;
 
             element = element.getParent();
         }while(profondita >= 0);
-
-        infoActive = true;
     }
 
     @Override
@@ -183,19 +185,15 @@ public class BtnIcon extends LabelPerBtn{
 
         info.setBounds(x, screenPoint.y - h, w, h);
 
-        if(!infoActive) setInfo();
+        if(panel == null) setInfo();
 
-        parent.getParent().add(info, Integer.valueOf(profonditaMax + 100));
+        panel.add(info, Integer.valueOf(profonditaMax + 100));
     }
 
     @Override
     public void exitedHover() {
 
-        if(info != null) {
-            parent.getParent().remove(info);
-            parent.getParent().revalidate();
-            parent.getParent().repaint();
-        }
+        if(info != null && panel != null) panel.eliminaElemtno(info.getClass().getSimpleName());
     }
 }
 

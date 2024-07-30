@@ -36,6 +36,7 @@ public class Global {
     //Layout
     public static final FlowLayout FL_C_0_0 = new FlowLayout(FlowLayout.CENTER, 0, 0);
     public static final FlowLayout FL_L_15_10 = new FlowLayout(FlowLayout.LEFT, 15, 10);
+    public static final FlowLayout FL_L_0_0 = new FlowLayout(FlowLayout.LEFT, 0, 0);
     public static final FlowLayout FL_C_10_10 = new FlowLayout(FlowLayout.CENTER, 10, 10);
     public static final FlowLayout FL_C_10_40 = new FlowLayout(FlowLayout.CENTER, 10, 40);
     public static final FlowLayout FL_C_40_10 = new FlowLayout(FlowLayout.CENTER, 40, 10);
