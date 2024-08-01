@@ -31,6 +31,10 @@ public abstract class PanelPerBtn extends JPanel implements MouseListener{
         dim.setSize(width, height);
     }
 
+    public Dimension getDimension() {
+        return dim;
+    }
+
     public abstract void onClick();
     public abstract void inHover();
     public abstract void outHover();

@@ -150,14 +150,16 @@ public class SecondaBarra extends Barra{
      */
     public void mostraElementi(String categoria) {
 
-        this.categoria = categoria;
+        if(open) {
+            this.categoria = categoria;
 
-        bds.setVisible(true);
-        lbl_titolo.setVisible(true);
-        pnl_elementi.setVisible(true);
-        lbl_titolo.setText(categoria.toUpperCase());
+            bds.setVisible(true);
+            lbl_titolo.setVisible(true);
+            pnl_elementi.setVisible(true);
+            lbl_titolo.setText(categoria.toUpperCase());
 
-        aggiornaPnlElementi();
+            aggiornaPnlElementi();
+        }
     }
 
     /**

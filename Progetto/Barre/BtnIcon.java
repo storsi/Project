@@ -7,6 +7,7 @@ import java.awt.Component;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import java.awt.MouseInfo;
@@ -23,6 +24,7 @@ public class BtnIcon extends LabelPerBtn{
 
     public static final int AGGIUNGI_TABELLA = 0, MOSTRA_SCHEMA = 1, ELIMINA = 2, AGGIUNGI = 3, CONFERMA = 4;
     public static final int ANNULLA = 5, PROSEGUI = 6, RIDUCI_BARRA = 7, ALLARGA_BARRA = 8;
+    public static final int MOSTRA_INFO_TABELLA = 9, MOSTRA_FOREIGN_KEYS = 10, MOSTRA_TRIGGERS = 11;
 
     public static final String[] NOMI_PRIMA_BARRA = {"Database"};
     public static final String[] NOMI_TERZA_BARRA = {"Aggiungi Tabella", "Mostra Schema", "Elimina", "Aggiungi",
@@ -33,6 +35,7 @@ public class BtnIcon extends LabelPerBtn{
     private Icon icon;
     private Informazione info;
     private SecondaBarra sb;
+    private PanelTabella pt;
     private PopUp avviso;
     private Barra barra;
     private boolean infoActive;
@@ -87,6 +90,20 @@ public class BtnIcon extends LabelPerBtn{
         setFont(Global.FONT_MEDIO);
         setText("\u2022 " + text.toUpperCase());
         setPreferredSize(new Dimension((int)sb.getPreferredSize().getWidth() - 5, 20));
+    }
+
+    public BtnIcon(String message, PanelTabella pt, int tipologia) {
+
+        this.tipologia = tipologia;
+        this.messaggio = message;
+        this.pt = pt;
+
+        setFont(Global.FONT_MEDIO);
+        setText("\u2022 " + message.toUpperCase());
+        setForeground(Color.BLACK);      
+        setOpaque(false);
+        setBackground(Color.RED);
+        setPreferredSize(new Dimension((int)pt.getDimension().getWidth() - 5, 20));
     }
 
     private void setUpIcon(int tipologia, String[] arrayIcone) {
@@ -145,6 +162,13 @@ public class BtnIcon extends LabelPerBtn{
             case 7: 
             case 8:
                 barra.startAnimation();
+            break;
+
+            case 9: pt.mostraInfo();
+            break;
+            case 10: pt.mostraFK();
+            break;
+            case 11: pt.mostraTriggers();
             break;
         
             default: sb.btnIconClicked(this);
