@@ -32,9 +32,7 @@ public class Panel extends JLayeredPane{
     public void eliminaElemtno(String elemento) {
         for(Component comp : getComponents()) {
             if(comp.getClass().getSimpleName().equals(elemento)) {
-                System.out.println("Fatto");
                 remove(comp);
-                revalidate();
                 repaint();
                 
             }

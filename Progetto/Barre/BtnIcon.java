@@ -7,7 +7,6 @@ import java.awt.Component;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import java.awt.MouseInfo;
@@ -45,6 +44,14 @@ public class BtnIcon extends LabelPerBtn{
     public BtnIcon(int tipologia, Barra barra) {
 
         this.barra = barra;
+        iconSize = Global.ICON_SIZE;
+        String[] nomi = (barra instanceof PrimaBarra) ? NOMI_PRIMA_BARRA : NOMI_TERZA_BARRA;
+        setUpIcon(tipologia, nomi);
+    }
+
+    public BtnIcon(int tipologia, PanelTabella pt) {
+
+        this.pt = pt;
         iconSize = Global.ICON_SIZE;
         String[] nomi = (barra instanceof PrimaBarra) ? NOMI_PRIMA_BARRA : NOMI_TERZA_BARRA;
         setUpIcon(tipologia, nomi);
@@ -109,7 +116,10 @@ public class BtnIcon extends LabelPerBtn{
     private void setUpIcon(int tipologia, String[] arrayIcone) {
         this.tipologia = tipologia;
         this.messaggio = arrayIcone[tipologia];
-        this.icon = Global.getIcon(arrayIcone[tipologia].replace(' ', '_') + ".png", iconSize);
+
+        if(tipologia == 2 && pt != null) this.icon = Global.getIcon(arrayIcone[tipologia] + "Nero".replace(' ', '_') + ".png", iconSize);
+        else this.icon = Global.getIcon(arrayIcone[tipologia].replace(' ', '_') + ".png", iconSize);
+
         this.info = new Informazione(messaggio);
         this.infoActive = false;
         this.parent = this;
@@ -149,7 +159,8 @@ public class BtnIcon extends LabelPerBtn{
             case 1:
             break;
 
-            case 2: barra.btnIconClicked(this);
+            case 2: if(barra != null) barra.btnIconClicked(this);
+                    else if(pt != null) pt.elimina();
             break;
 
             case 3:
@@ -199,17 +210,19 @@ public class BtnIcon extends LabelPerBtn{
     public void hover2sec() {
         int x;
 
+        if(panel == null) setInfo();
+
         Point screenPoint = MouseInfo.getPointerInfo().getLocation();
-        SwingUtilities.convertPointFromScreen(screenPoint, getParent().getParent().getParent().getParent());
+        SwingUtilities.convertPointFromScreen(screenPoint, panel);
 
         int w = messaggio.length() * 9, h = (int)(Global.ICON_SIZE * 0.5);
 
         if(screenPoint.x + w > Global.FRAME_WIDTH) x = screenPoint.x - (screenPoint.x + w - Global.FRAME_WIDTH + 10);
         else x = screenPoint.x;
 
-        info.setBounds(x, screenPoint.y - h, w, h);
+        System.out.println(x + " " + screenPoint.y);
 
-        if(panel == null) setInfo();
+        info.setBounds(x, screenPoint.y - h, w, h);
 
         panel.add(info, Integer.valueOf(profonditaMax + 100));
     }
@@ -218,6 +231,14 @@ public class BtnIcon extends LabelPerBtn{
     public void exitedHover() {
 
         if(info != null && panel != null) panel.eliminaElemtno(info.getClass().getSimpleName());
+
+        if(tipologia == 2 && pt != null) setIcon(Global.getIcon("EliminaNero.png", Global.ICON_SIZE));
+        else if(tipologia == 2) setIcon(Global.getIcon("Elimina.png", Global.ICON_SIZE));
+    }
+
+    @Override
+    public void hover() {
+        if(tipologia == 2) setIcon(Global.getIcon("EliminaRosso.png", Global.ICON_SIZE));
     }
 }
 

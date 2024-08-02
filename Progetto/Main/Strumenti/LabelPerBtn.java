@@ -111,6 +111,7 @@ public abstract class LabelPerBtn extends JLabel implements MouseListener{
     public abstract void onClick();
     public abstract void hover2sec();
     public abstract void exitedHover();
+    public abstract void hover();
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -128,6 +129,7 @@ public abstract class LabelPerBtn extends JLabel implements MouseListener{
     @Override
     public void mouseEntered(MouseEvent e) {
         if(clickable) setCursor(new Cursor(Cursor.HAND_CURSOR));
+        hover();
 
         if(twoSeconHover) activeThread();
     }

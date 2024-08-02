@@ -64,7 +64,7 @@ public class PanelTabella extends PanelPerBtn{
 
     private void createElements(String nome) {
         pnl_parteAlta = new JPanel(Global.FL_C_0_0);
-        pnl_parteBassa = new JPanel(Global.FL_C_0_0);
+        pnl_parteBassa = new JPanel(Global.FL_C_40_10);
         pnl_generale = new JPanel(Global.FL_L_30_10);
         lbl_nome = new JLabel(nome, SwingConstants.CENTER);
         bdsAlta = new BarraDiSeparazione(0);
@@ -88,10 +88,15 @@ public class PanelTabella extends PanelPerBtn{
         pnl_generale.add(new BtnIcon("Foreign Keys", this, BtnIcon.MOSTRA_FOREIGN_KEYS));
         pnl_generale.add(new BtnIcon("Triggers", this, BtnIcon.MOSTRA_TRIGGERS));
         pnl_parteBassa.add(bdsBassa);
+        pnl_parteBassa.add(new BtnIcon(BtnIcon.ELIMINA, this));
 
         add(pnl_parteAlta);
         add(pnl_generale);
         add(pnl_parteBassa);
+    }
+
+    public void elimina() {
+        
     }
 
     public void mostraTabella() {
