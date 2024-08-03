@@ -228,7 +228,7 @@ public class SecondaBarra extends Barra{
     }
 
     @Override
-    protected void anima() {
+    protected void animaBarra() {
         btn_resize.exitedHover();
 
         int modifica = (open) ? -10 : 10, w = (int)dim_barra.getWidth() + modifica;

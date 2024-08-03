@@ -102,7 +102,7 @@ public class TerzaBarra extends Barra{
     }
 
     @Override
-    protected void anima() {
+    protected void animaBarra() {
         
     }
 }

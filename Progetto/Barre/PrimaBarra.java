@@ -33,7 +33,7 @@ public class PrimaBarra extends Barra{
     }
 
     @Override
-    protected void anima() {
+    protected void animaBarra() {
         
     }
 }
