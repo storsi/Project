@@ -149,9 +149,9 @@ public class SecondaBarra extends Barra{
      * @param categoria Indica la categoria a cui il bottone appartiene (Database, ...)
      */
     public void mostraElementi(String categoria) {
+        this.categoria = categoria;
 
         if(open) {
-            this.categoria = categoria;
 
             bds.setVisible(true);
             lbl_titolo.setVisible(true);
@@ -233,6 +233,8 @@ public class SecondaBarra extends Barra{
 
         int modifica = (open) ? -10 : 10, w = (int)dim_barra.getWidth() + modifica;
 
+
+
         if(open) {
             btn_resize.changeTipologia(BtnIcon.ALLARGA_BARRA);
 
@@ -255,11 +257,7 @@ public class SecondaBarra extends Barra{
                 stopAnimation();            
                 open = true;
 
-                if(categoria != null) {
-                    pnl_elementi.setVisible(true);
-                    bds.setVisible(true);
-                    lbl_titolo.setVisible(true);
-                }
+                if(categoria != null) mostraElementi(categoria);
             }
         }
 

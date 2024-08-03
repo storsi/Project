@@ -47,7 +47,7 @@ public class TerzaBarra extends Barra{
     }
 
     public void modificaDimensione(int modifica) {
-        dim.setSize(getWidth() + modifica, getHeight());
+        dim.setSize(getPreferredSize().getWidth() + modifica, getPreferredSize().getHeight());
 
         pa.updateDimension();
         pb.updateDimension();

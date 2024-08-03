@@ -11,12 +11,14 @@ public interface Animated {
                     synchronized(this) {
                         try {
                             this.wait();
+
+                            
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
                 }
-
+                
                 anima();
 
             }while(true);

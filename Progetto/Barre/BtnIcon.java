@@ -220,8 +220,6 @@ public class BtnIcon extends LabelPerBtn{
         if(screenPoint.x + w > Global.FRAME_WIDTH) x = screenPoint.x - (screenPoint.x + w - Global.FRAME_WIDTH + 10);
         else x = screenPoint.x;
 
-        System.out.println(x + " " + screenPoint.y);
-
         info.setBounds(x, screenPoint.y - h, w, h);
 
         panel.add(info, Integer.valueOf(profonditaMax + 100));
