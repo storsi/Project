@@ -111,7 +111,7 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
         setForeground(Color.BLACK);      
         setOpaque(false);
         setBackground(Color.RED);
-        setPreferredSize(new Dimension((int)pt.getDimension().getWidth() - 5, 20));
+        setPreferredSize(new Dimension((int)pt.getPreferredSize().getWidth() - 5, 20));
     }
 
     private void setUpIcon(int tipologia, String[] arrayIcone) {
@@ -212,7 +212,6 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
     @Override
     public void hover() {
         int x;
-        System.out.println("Ciao");
 
         if(panel == null) setInfo();
 

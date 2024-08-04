@@ -22,7 +22,7 @@ public interface Hover extends MouseInterface{
                         e.printStackTrace();
                     }
                 }
-                System.out.println(hoverActive());
+                
                 if(hoverActive()) hover();
 
             }while(true);

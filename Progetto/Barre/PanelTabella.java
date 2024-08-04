@@ -1,23 +1,26 @@
 package Progetto.Barre;
 
-import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
 import Progetto.Main.Global;
+import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
-import Progetto.Main.Strumenti.PanelPerBtn;
 
-public class PanelTabella extends PanelPerBtn{
+public class PanelTabella extends JPanel implements Clickable{
 
     private JLabel lbl_nome;
     private int width, height;
     private boolean lungo;
     private ParteBassa pb;
     private BarraDiSeparazione bdsAlta, bdsBassa;
+    private Dimension dim;
     private JPanel pnl_parteAlta, pnl_parteBassa, pnl_generale, pnl_info, pnl_foreignKey, pnl_triggers;
 
     public PanelTabella(String nome, boolean lungo, ParteBassa pb) {
@@ -25,7 +28,9 @@ public class PanelTabella extends PanelPerBtn{
 
         this.lungo = lungo;
         this.pb = pb;
+        this.dim = new Dimension();
         
+        setPreferredSize(dim);
         createElements(nome);
         setDimension(lungo);
         setUp();
@@ -54,7 +59,7 @@ public class PanelTabella extends PanelPerBtn{
             bdsAlta.setVisible(true);
         }
 
-        super.changeDimension(width, height);
+        dim.setSize(width, height);
         bdsBassa.setWidth(bdsAlta.getWidth());
         bdsBassa.setVisible(bdsAlta.isVisible());
 
@@ -112,20 +117,20 @@ public class PanelTabella extends PanelPerBtn{
     }
 
     @Override
-    public void onClick() {
+    public void afterClick() {
         mostraTabella();
     }
 
     @Override
-    public void inHover() {
-        
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        Graphics2D g2d = (Graphics2D) g;
+        int raggioCurvatura = 40;
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2d.setColor(getBackground());
+        g2d.fillRoundRect(0, 0, width, height, raggioCurvatura, raggioCurvatura);
     }
-
-    @Override
-    public void outHover() {
-
-    }
-
-    
-    
 }
