@@ -15,19 +15,20 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 
-import Progetto.Main.Strumenti.LabelPerBtn;
 import Progetto.Main.Global;
 import Progetto.Main.Panel;
+import Progetto.Main.Interface.Clickable;
+import Progetto.Main.Interface.Hover;
 
-public class BtnIcon extends LabelPerBtn{
+public class BtnIcon extends JLabel implements Hover, Clickable{
 
     public static final int AGGIUNGI_TABELLA = 0, MOSTRA_SCHEMA = 1, ELIMINA = 2, AGGIUNGI = 3, CONFERMA = 4;
-    public static final int ANNULLA = 5, PROSEGUI = 6, RIDUCI_BARRA = 7, ALLARGA_BARRA = 8;
-    public static final int MOSTRA_INFO_TABELLA = 9, MOSTRA_FOREIGN_KEYS = 10, MOSTRA_TRIGGERS = 11;
+    public static final int ANNULLA = 5, PROSEGUI = 6, RIDUCI_BARRA = 7, ALLARGA_BARRA = 8, ELIMINA_NERO = 9;
+    public static final int MOSTRA_INFO_TABELLA = 10, MOSTRA_FOREIGN_KEYS = 11, MOSTRA_TRIGGERS = 12;
 
     public static final String[] NOMI_PRIMA_BARRA = {"Database"};
     public static final String[] NOMI_TERZA_BARRA = {"Aggiungi Tabella", "Mostra Schema", "Elimina", "Aggiungi",
-                                                    "Conferma", "Annulla", "Prosegui", "Riduci", "Allarga"};
+                                                    "Conferma", "Annulla", "Prosegui", "Riduci", "Allarga", "EliminaNero"};
 
     private String messaggio, categoria;
     private int tipologia, iconSize, profonditaMax;
@@ -37,7 +38,7 @@ public class BtnIcon extends LabelPerBtn{
     private PanelTabella pt;
     private PopUp avviso;
     private Barra barra;
-    private boolean infoActive;
+    private boolean infoActive, hoverAttivo, hoverable;
     private Component parent;
     private Panel panel;
 
@@ -91,9 +92,9 @@ public class BtnIcon extends LabelPerBtn{
         this.sb = sb;
         this.messaggio = text;
         this.categoria = categoria;
-        
-        super.setTwoSecondsHover(false);
 
+        setForeground(Color.WHITE);
+        addMouseListener(this);
         setFont(Global.FONT_MEDIO);
         setText("\u2022 " + text.toUpperCase());
         setPreferredSize(new Dimension((int)sb.getPreferredSize().getWidth() - 5, 20));
@@ -116,15 +117,15 @@ public class BtnIcon extends LabelPerBtn{
     private void setUpIcon(int tipologia, String[] arrayIcone) {
         this.tipologia = tipologia;
         this.messaggio = arrayIcone[tipologia];
-
-        if(tipologia == 2 && pt != null) this.icon = Global.getIcon(arrayIcone[tipologia] + "Nero".replace(' ', '_') + ".png", iconSize);
-        else this.icon = Global.getIcon(arrayIcone[tipologia].replace(' ', '_') + ".png", iconSize);
-
+        this.icon = Global.getIcon(arrayIcone[tipologia].replace(' ', '_') + ".png", iconSize);
         this.info = new Informazione(messaggio);
         this.infoActive = false;
         this.parent = this;
-        super.setTwoSecondsHover(true);
+        this.hoverAttivo = false;
 
+        setHoverThread();
+        setForeground(Color.WHITE);
+        addMouseListener(this);
         setPreferredSize(new Dimension(iconSize, iconSize));
         setIcon(icon);
     }
@@ -146,9 +147,9 @@ public class BtnIcon extends LabelPerBtn{
     }
 
     @Override
-    public void onClick() {
-        exitedHover();
-        super.setIsActive(false);
+    public void afterClick() {
+        outHover();
+        hoverAttivo = false;
 
         switch (tipologia) {
             case 0:
@@ -159,7 +160,9 @@ public class BtnIcon extends LabelPerBtn{
             case 1:
             break;
 
-            case 2: if(barra != null) barra.btnIconClicked(this);
+            case 2: 
+            case 13:
+                    if(barra != null) barra.btnIconClicked(this);
                     else if(pt != null) pt.elimina();
             break;
 
@@ -172,7 +175,7 @@ public class BtnIcon extends LabelPerBtn{
 
             case 7: 
             case 8:
-                barra.startAnimation();
+                barra.onClick();
             break;
 
             case 9: pt.mostraInfo();
@@ -207,8 +210,9 @@ public class BtnIcon extends LabelPerBtn{
     }
 
     @Override
-    public void hover2sec() {
+    public void hover() {
         int x;
+        System.out.println("Ciao");
 
         if(panel == null) setInfo();
 
@@ -226,17 +230,24 @@ public class BtnIcon extends LabelPerBtn{
     }
 
     @Override
-    public void exitedHover() {
-
-        if(info != null && panel != null) panel.eliminaElemtno(info.getClass().getSimpleName());
-
-        if(tipologia == 2 && pt != null) setIcon(Global.getIcon("EliminaNero.png", Global.ICON_SIZE));
-        else if(tipologia == 2) setIcon(Global.getIcon("Elimina.png", Global.ICON_SIZE));
+    public boolean hoverActive() {
+        return hoverAttivo;
     }
 
     @Override
-    public void hover() {
-        if(tipologia == 2) setIcon(Global.getIcon("EliminaRosso.png", Global.ICON_SIZE));
+    public int getMilliseconds() {
+        return 800;
+    }
+
+    @Override
+    public void inHover() {
+        hoverAttivo = true;
+        attivaHover();
+    }
+
+    @Override
+    public void outHover() {
+        if(info != null && panel != null) panel.eliminaElemtno(info.getClass().getSimpleName());
     }
 }
 

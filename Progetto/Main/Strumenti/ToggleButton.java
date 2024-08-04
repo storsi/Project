@@ -5,25 +5,28 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.event.MouseEvent;
 
 import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import Progetto.Barre.TerzaBarra;
+import Progetto.Main.Interface.Animated;
+import Progetto.Main.Interface.Hover;
 
-public class ToggleButton extends PanelPerBtn{
+public class ToggleButton extends JPanel implements Animated, Hover{
 
     private Palla palla;
     private Barra barra;
-    private boolean active;
+    private boolean active, animazioneAttiva, hoverAttivo;
     private TerzaBarra tb;
-    private Icon left, right;
+    private double xPos;
     
-    public ToggleButton(TerzaBarra tb, Icon left, Icon right) {
+    public ToggleButton(TerzaBarra tb) {
         
         this.tb = tb;
-        this.left = left;
-        this.right = right;
+        this.xPos = 0;
+        this.hoverAttivo = active = animazioneAttiva =  false;
 
         setUp();
     }
@@ -31,13 +34,16 @@ public class ToggleButton extends PanelPerBtn{
     private void setUp() {
         setLayout(null);
         setPreferredSize(new Dimension(70, 30));
-        setBackground(getBackground());
+        setBackground(tb.getBackground());
+        setAnimationThread();
+        setHoverThread();
+        addMouseListener(this);
 
         palla = new Palla((int)getPreferredSize().getHeight());
         barra = new Barra((int)getPreferredSize().getWidth(), (int)getPreferredSize().getHeight());
         barra.setBackground(palla.getBackground());
 
-        active = false;
+        
 
         add(palla);
         add(barra);
@@ -45,22 +51,58 @@ public class ToggleButton extends PanelPerBtn{
 
     @Override
     public void onClick() {
-        if(active) palla.setLocation(0, 0);
-        else palla.setLocation((int)(getPreferredSize().getWidth() - getPreferredSize().getHeight()), 0);
 
-        active = !active;
-
-        tb.modificaDisposizioneTabelle();
+        animazioneAttiva = true;
+        attivaThread();
     }
 
     @Override
     public void inHover() {
-        
+        hoverAttivo = true;
+        attivaHover();
     }
 
     @Override
     public void outHover() {
+        hoverAttivo = false;
+    }
+
+    @Override
+    public boolean animationActive() {
+        return animazioneAttiva;
+    }
+
+    @Override
+    public void anima() {
         
+        if(active) xPos -= 0.0001;
+        else xPos += 0.0001;
+
+        if(xPos >= (int)(getPreferredSize().getWidth() - getPreferredSize().getHeight()) || xPos <= 0) {
+            animazioneAttiva = false;
+            tb.modificaDisposizioneTabelle();
+            active = !active;
+        }
+        
+        palla.setLocation((int)xPos, 0);
+
+        palla.revalidate();
+        palla.repaint();
+    }
+
+    @Override
+    public int getMilliseconds() {
+        return 800;
+    }
+
+    @Override
+    public void hover() {
+        //TODO Aggiungere la classe informazione
+    }
+
+    @Override
+    public boolean hoverActive() {
+        return hoverAttivo;
     }
 }
 

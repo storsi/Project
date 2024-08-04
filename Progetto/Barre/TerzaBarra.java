@@ -208,7 +208,7 @@ class ParteBassa extends JPanel {
         pnl_switch.setPreferredSize(dim_pnlSwitch);
         pnl_switch.setBackground(getBackground());
 
-        pnl_switch.add(new ToggleButton(tb, Global.getIcon("Quadrato.png", Global.ICON_SIZE), Global.getIcon("Quadrato.png", Global.ICON_SIZE)));
+        pnl_switch.add(new ToggleButton(tb));
         
         pnl_tabelle = new JPanel(Global.FL_L_30_30);
         pnl_tabelle.setPreferredSize(dim_pnlTabelle);

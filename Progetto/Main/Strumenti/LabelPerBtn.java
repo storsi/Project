@@ -11,7 +11,6 @@ import java.awt.Dimension;
 
 public abstract class LabelPerBtn extends JLabel implements MouseListener{
 
-    protected Object obj; 
     protected boolean clickable;
     private long timeEntered;
     private Thread thread;

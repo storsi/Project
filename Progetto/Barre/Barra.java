@@ -18,14 +18,15 @@ public abstract class Barra extends JPanel implements Animated{
         
 
         animazioneAttiva = false;
-        if(animated) setThread();
+        if(animated) setAnimationThread();
     }
     
     protected abstract void setUp();
     public abstract void btnIconClicked(BtnIcon btn);
     protected abstract void animaBarra();
 
-    public void startAnimation() {
+    @Override
+    public void onClick() {
         animazioneAttiva = true;
         attivaThread();
     }
@@ -40,7 +41,7 @@ public abstract class Barra extends JPanel implements Animated{
     }
 
     @Override
-    public boolean isActive() {
+    public boolean animationActive() {
         return animazioneAttiva;
     }
 } 

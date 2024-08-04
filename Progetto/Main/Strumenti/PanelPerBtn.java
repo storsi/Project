@@ -57,7 +57,7 @@ public abstract class PanelPerBtn extends JPanel implements MouseListener{
     @Override
     public void mouseEntered(MouseEvent e) {
         setCursor(new Cursor(Cursor.HAND_CURSOR));
-
+        
         inHover();
     }
 

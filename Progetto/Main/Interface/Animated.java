@@ -1,13 +1,15 @@
 package Progetto.Main.Interface;
 
-public interface Animated {
+import java.awt.event.MouseEvent;
 
-    default void setThread() {
+public interface Animated extends MouseInterface{
+
+    default void setAnimationThread() {
 
         Thread thread =new Thread(() -> {
             do{
 
-                if(!isActive()) {
+                if(!animationActive()) {
                     synchronized(this) {
                         try {
                             this.wait();
@@ -30,10 +32,16 @@ public interface Animated {
     default void attivaThread() {
 
         synchronized(this) {
-            notify();
+            notifyAll();
         }
     }
     
-    boolean isActive();
+    boolean animationActive();
     void anima();
+    void onClick();
+
+    @Override
+    default void mouseClicked(MouseEvent e) {
+        onClick();
+    }
 }

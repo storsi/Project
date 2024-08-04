@@ -88,7 +88,7 @@ public class PanelTabella extends PanelPerBtn{
         pnl_generale.add(new BtnIcon("Foreign Keys", this, BtnIcon.MOSTRA_FOREIGN_KEYS));
         pnl_generale.add(new BtnIcon("Triggers", this, BtnIcon.MOSTRA_TRIGGERS));
         pnl_parteBassa.add(bdsBassa);
-        pnl_parteBassa.add(new BtnIcon(BtnIcon.ELIMINA, this));
+        pnl_parteBassa.add(new BtnIcon(BtnIcon.ELIMINA_NERO, this));
 
         add(pnl_parteAlta);
         add(pnl_generale);
