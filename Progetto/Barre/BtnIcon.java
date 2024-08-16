@@ -20,11 +20,10 @@ import Progetto.Main.Panel;
 import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Interface.Hover;
 
-public class BtnIcon extends JLabel implements Clickable{
+public class BtnIcon extends JLabel implements Clickable, Hover{
 
     public static final int AGGIUNGI_TABELLA = 0, MOSTRA_SCHEMA = 1, ELIMINA = 2, AGGIUNGI = 3, CONFERMA = 4;
     public static final int ANNULLA = 5, PROSEGUI = 6, RIDUCI_BARRA = 7, ALLARGA_BARRA = 8, ELIMINA_NERO = 9;
-    public static final int MOSTRA_INFO_TABELLA = 10, MOSTRA_FOREIGN_KEYS = 11, MOSTRA_TRIGGERS = 12;
 
     public static final String[] NOMI_PRIMA_BARRA = {"Database"};
     public static final String[] NOMI_TERZA_BARRA = {"Aggiungi Tabella", "Mostra Schema", "Elimina", "Aggiungi",
@@ -146,7 +145,7 @@ public class BtnIcon extends JLabel implements Clickable{
             break;
 
             case 2: 
-            case 13:
+            case 9:
                     if(barra != null) barra.btnIconClicked(this);
                     else if(pt != null) pt.elimina();
             break;
@@ -161,13 +160,6 @@ public class BtnIcon extends JLabel implements Clickable{
             case 7: 
             case 8:
                 barra.afterClick();
-            break;
-
-            case 9: pt.mostraInfo();
-            break;
-            case 10: pt.mostraFK();
-            break;
-            case 11: pt.mostraTriggers();
             break;
         
             default: sb.btnIconClicked(this);
@@ -193,6 +185,28 @@ public class BtnIcon extends JLabel implements Clickable{
 
             element = element.getParent();
         }while(profondita >= 0);
+    }
+
+    @Override
+    public boolean hoverActive() {
+        return false;
+    }
+
+    @Override
+    public int getMilliseconds() {
+        return 0;
+    }
+
+    @Override
+    public void hover() {
+    }
+
+    @Override
+    public void inHover() {
+    }
+
+    @Override
+    public void outHover() {
     }
 
     /* @Override

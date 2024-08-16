@@ -14,6 +14,8 @@ import Progetto.Main.Strumenti.BarraDiSeparazione;
 
 public class BtnText extends JLabel implements Hover, Animated, Clickable{
 
+    public static final int MOSTRA_INFO_TABELLA = 0, MOSTRA_FOREIGN_KEYS = 1, MOSTRA_TRIGGERS = 2, MOSTRA_TABELLA = 3;
+
     private boolean hoverActive, animationActive;
     private SecondaBarra sb;
     private String text, categoria;
@@ -141,6 +143,14 @@ public class BtnText extends JLabel implements Hover, Animated, Clickable{
         
         switch (tipologia) {
             case -1: sb.aggiornaTerzaBarra(this);
+            break;
+            case 0: pt.mostraInfo();
+            break;
+            case 1: pt.mostraFK();
+            break;
+            case 2: pt.mostraTriggers();
+            break;
+            case 3: pt.mostraTabella();
             break;
             default:
             break;

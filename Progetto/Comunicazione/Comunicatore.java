@@ -26,4 +26,12 @@ public class Comunicatore {
     private void changePath() {
         sqlite.changePath(Global.pathToDB + database + ".db");
     }
+
+    public int getColumnNumber(String nomeTabella) {
+        return sqlite.getColumns(nomeTabella).length;
+    }
+
+    public int getRowNumber(String nomeTabella) {
+        return sqlite.select("SELECT * FROM " + nomeTabella, nomeTabella).length;
+    }
 }
