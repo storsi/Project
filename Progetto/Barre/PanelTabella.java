@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Component;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -33,6 +34,7 @@ public class PanelTabella extends JPanel implements Clickable{
         setPreferredSize(dim);
         createElements(nome);
         setDimension(lungo);
+        setOpaque(false);
         setUp();
 
         repaint();
@@ -89,9 +91,9 @@ public class PanelTabella extends JPanel implements Clickable{
 
         pnl_parteAlta.add(lbl_nome);
         pnl_parteAlta.add(bdsAlta);
-        pnl_generale.add(new BtnIcon("Informazioni", this, BtnIcon.MOSTRA_INFO_TABELLA));
-        pnl_generale.add(new BtnIcon("Foreign Keys", this, BtnIcon.MOSTRA_FOREIGN_KEYS));
-        pnl_generale.add(new BtnIcon("Triggers", this, BtnIcon.MOSTRA_TRIGGERS));
+        pnl_generale.add(new BtnText("Informazioni", this, BtnIcon.MOSTRA_INFO_TABELLA));
+        pnl_generale.add(new BtnText("Foreign Keys", this, BtnIcon.MOSTRA_FOREIGN_KEYS));
+        pnl_generale.add(new BtnText("Triggers", this, BtnIcon.MOSTRA_TRIGGERS));
         pnl_parteBassa.add(bdsBassa);
         pnl_parteBassa.add(new BtnIcon(BtnIcon.ELIMINA_NERO, this));
 

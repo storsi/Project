@@ -38,10 +38,4 @@ public interface Animated extends MouseInterface{
     
     boolean animationActive();
     void anima();
-    void onClick();
-
-    @Override
-    default void mouseClicked(MouseEvent e) {
-        onClick();
-    }
 }

@@ -3,11 +3,12 @@ package Progetto.Barre;
 import javax.swing.JPanel;
 
 import Progetto.Main.Interface.Animated;
+import Progetto.Main.Interface.Clickable;
 
 import java.awt.Color;
 import java.awt.LayoutManager;
 
-public abstract class Barra extends JPanel implements Animated{
+public abstract class Barra extends JPanel implements Animated, Clickable{
 
     private boolean animazioneAttiva;
 
@@ -26,7 +27,7 @@ public abstract class Barra extends JPanel implements Animated{
     protected abstract void animaBarra();
 
     @Override
-    public void onClick() {
+    public void afterClick() {
         animazioneAttiva = true;
         attivaThread();
     }

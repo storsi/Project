@@ -5,16 +5,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-import java.awt.event.MouseEvent;
 
-import javax.swing.Icon;
 import javax.swing.JPanel;
 
 import Progetto.Barre.TerzaBarra;
 import Progetto.Main.Interface.Animated;
+import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Interface.Hover;
 
-public class ToggleButton extends JPanel implements Animated, Hover{
+public class ToggleButton extends JPanel implements Animated, Hover, Clickable{
 
     private Palla palla;
     private Barra barra;
@@ -50,7 +49,7 @@ public class ToggleButton extends JPanel implements Animated, Hover{
     }
 
     @Override
-    public void onClick() {
+    public void afterClick() {
 
         animazioneAttiva = true;
         attivaThread();

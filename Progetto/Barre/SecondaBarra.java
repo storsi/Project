@@ -84,17 +84,16 @@ public class SecondaBarra extends Barra{
         add(pnl_elementi);
     }
 
+    public void aggiornaTerzaBarra(BtnText btn) {
+        if(btn.getCategoria().equals("Database")) {
+            tb.mostraDatabase(btn.getText());
+            resetAddElement();
+        }
+    }
+
     @Override
     public void btnIconClicked(BtnIcon btn) {
         switch (btn.getTipologia()) {
-            case -1:
-
-                if(btn.getCategoria().equals("Database")) {
-                    tb.mostraDatabase(btn.getMessaggio());
-                    resetAddElement();
-                }
-
-            break;
             case BtnIcon.AGGIUNGI:
 
                     /*
@@ -186,7 +185,7 @@ public class SecondaBarra extends Barra{
         }
         
         for(String nome: elementi) {
-            pnl_elementi.add(new BtnIcon(nome, this, categoria));
+            pnl_elementi.add(new BtnText(nome, this, categoria));
         }
 
         btn_aggiungi = new BtnIcon(BtnIcon.AGGIUNGI, this, categoria);
@@ -229,11 +228,9 @@ public class SecondaBarra extends Barra{
 
     @Override
     protected void animaBarra() {
-        btn_resize.outHover();
+        //btn_resize.outHover();
 
         int modifica = (open) ? -10 : 10, w = (int)dim_barra.getWidth() + modifica;
-
-
 
         if(open) {
             btn_resize.changeTipologia(BtnIcon.ALLARGA_BARRA);

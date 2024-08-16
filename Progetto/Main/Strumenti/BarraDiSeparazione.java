@@ -34,6 +34,9 @@ public class BarraDiSeparazione extends JPanel{
     public void setWidth(int width) {
         this.width = width;
         setPreferredSize(new Dimension(width, Global.BARRA_DI_SEPARAZIONE_HEIGHT));
+
+        revalidate();
+        repaint();
     }
 
     @Override

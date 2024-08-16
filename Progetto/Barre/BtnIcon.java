@@ -20,7 +20,7 @@ import Progetto.Main.Panel;
 import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Interface.Hover;
 
-public class BtnIcon extends JLabel implements Hover, Clickable{
+public class BtnIcon extends JLabel implements Clickable{
 
     public static final int AGGIUNGI_TABELLA = 0, MOSTRA_SCHEMA = 1, ELIMINA = 2, AGGIUNGI = 3, CONFERMA = 4;
     public static final int ANNULLA = 5, PROSEGUI = 6, RIDUCI_BARRA = 7, ALLARGA_BARRA = 8, ELIMINA_NERO = 9;
@@ -100,20 +100,6 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
         setPreferredSize(new Dimension((int)sb.getPreferredSize().getWidth() - 5, 20));
     }
 
-    public BtnIcon(String message, PanelTabella pt, int tipologia) {
-
-        this.tipologia = tipologia;
-        this.messaggio = message;
-        this.pt = pt;
-
-        setFont(Global.FONT_MEDIO);
-        setText("\u2022 " + message.toUpperCase());
-        setForeground(Color.BLACK);      
-        setOpaque(false);
-        setBackground(Color.RED);
-        setPreferredSize(new Dimension((int)pt.getPreferredSize().getWidth() - 5, 20));
-    }
-
     private void setUpIcon(int tipologia, String[] arrayIcone) {
         this.tipologia = tipologia;
         this.messaggio = arrayIcone[tipologia];
@@ -123,7 +109,6 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
         this.parent = this;
         this.hoverAttivo = false;
 
-        setHoverThread();
         setForeground(Color.WHITE);
         addMouseListener(this);
         setPreferredSize(new Dimension(iconSize, iconSize));
@@ -148,7 +133,7 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
 
     @Override
     public void afterClick() {
-        outHover();
+        //outHover();
         hoverAttivo = false;
 
         switch (tipologia) {
@@ -175,7 +160,7 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
 
             case 7: 
             case 8:
-                barra.onClick();
+                barra.afterClick();
             break;
 
             case 9: pt.mostraInfo();
@@ -194,6 +179,7 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
         int profondita;
         Component element = this;
         profonditaMax = 0;
+        parent = this;
 
         do{
             parent = parent.getParent();
@@ -209,7 +195,7 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
         }while(profondita >= 0);
     }
 
-    @Override
+    /* @Override
     public void hover() {
         int x;
 
@@ -225,6 +211,7 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
 
         info.setBounds(x, screenPoint.y - h, w, h);
 
+        System.out.println(info);
         panel.add(info, Integer.valueOf(profonditaMax + 100));
     }
 
@@ -247,7 +234,7 @@ public class BtnIcon extends JLabel implements Hover, Clickable{
     @Override
     public void outHover() {
         if(info != null && panel != null) panel.eliminaElemtno(info.getClass().getSimpleName());
-    }
+    } */
 }
 
 class Informazione extends JLabel{
