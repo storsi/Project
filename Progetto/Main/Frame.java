@@ -8,11 +8,11 @@ public class Frame extends JFrame{
 
         setTitle("Il miglior software della storia");
         //setResizable(false);
+        setSize(Global.FRAME_WIDTH, Global.FRAME_HEIGHT);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         add(new Panel());
 
-        pack();
         setLocationRelativeTo(null);
         setVisible(true);
     }

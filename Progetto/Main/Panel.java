@@ -17,8 +17,9 @@ public class Panel extends JLayeredPane{
     
     public Panel() {
 
-        setPreferredSize(new Dimension(Global.FRAME_WIDTH, Global.FRAME_HEIGHT));
-        setLayout(Global.FL_L_0_0);
+        setLayout(null);
+        setBounds(0, 0, Global.FRAME_WIDTH, Global.FRAME_HEIGHT);
+        
 
         tb = new TerzaBarra();
         sb = new SecondaBarra(tb);

@@ -1,8 +1,10 @@
 package Progetto.Barre;
 
 import java.awt.Dimension;
+import java.awt.Point;
 import java.io.File;
 import java.awt.Color;
+import java.awt.Rectangle;
 
 import javax.swing.JPanel;
 import javax.swing.Box;
@@ -24,12 +26,14 @@ public class SecondaBarra extends Barra{
     private String categoria;
     private boolean open;
     private Dimension dim_barra, dim_pnlResize;
+    private Rectangle rect;
     
     public SecondaBarra(TerzaBarra tb) {
         super(Global.COLORE_SECONDA_BARRA, Global.FL_C_10_10, true);
 
         dim_barra = new Dimension((int)(Global.FRAME_WIDTH * 0.15), Global.FRAME_HEIGHT);
-
+        rect = new Rectangle(new Point(Global.FRAME_WIDTH - tb.getWidth() - (int)dim_barra.getWidth(), 0), dim_barra);
+        setBounds(rect);
         setPreferredSize(dim_barra);
 
         dim_pnlResize = new Dimension((int)getPreferredSize().getWidth(), (int)(getPreferredSize().getHeight() * 0.05));
@@ -261,7 +265,11 @@ public class SecondaBarra extends Barra{
         tb.modificaDimensione(-modifica);
 
         dim_pnlResize.setSize(w, (int)dim_pnlResize.getHeight());
+        
         dim_barra.setSize(w, (int)dim_barra.getHeight());
+        rect.setSize(dim_barra);
+        setBounds(rect);
+        
         revalidate();
         repaint();
     }

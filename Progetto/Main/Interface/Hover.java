@@ -10,7 +10,7 @@ public interface Hover extends MouseInterface{
     default void setHoverThread() {
 
         Thread thread = new Thread(() -> {
-
+            
             do{
                     
                 synchronized(this) {
@@ -34,7 +34,7 @@ public interface Hover extends MouseInterface{
     default void attivaHover() {
         
         synchronized(this) {
-            this.notifyAll();
+            this.notify();
         }
     }
 
@@ -69,7 +69,7 @@ public interface Hover extends MouseInterface{
     default void mouseEntered(MouseEvent e) {
         e.getComponent().setCursor(new Cursor(Cursor.HAND_CURSOR));
         
-        inHover();
+        if(!hoverActive()) inHover();
     }
 
     @Override

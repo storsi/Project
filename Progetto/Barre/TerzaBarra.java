@@ -15,6 +15,8 @@ import java.awt.Dimension;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 
 public class TerzaBarra extends Barra{
@@ -25,11 +27,14 @@ public class TerzaBarra extends Barra{
     private SecondaBarra sb;
     private String nome;
     private Dimension dim;
+    private Rectangle rect;
     
     public TerzaBarra() {
         super(Global.COLORE_TERZA_BARRA,Global.FL_C_0_0, true);
         dim = new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT);
+        rect = new Rectangle(new Point(Global.FRAME_WIDTH - (int)dim.getWidth(), 0), dim);
 
+        setBounds(rect);
         setPreferredSize(dim);
 
         setUp();
@@ -47,7 +52,10 @@ public class TerzaBarra extends Barra{
     }
 
     public void modificaDimensione(int modifica) {
-        dim.setSize(getPreferredSize().getWidth() + modifica, getPreferredSize().getHeight());
+        dim.setSize(dim.getWidth() + modifica, dim.getHeight());
+        rect.setSize(dim);
+        rect.setLocation(getX() - modifica, getY());
+        setBounds(rect);
 
         pa.updateDimension();
         pb.updateDimension();

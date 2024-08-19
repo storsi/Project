@@ -10,7 +10,7 @@ public class PrimaBarra extends Barra{
     
     public PrimaBarra(SecondaBarra sb) {
         super(Global.COLORE_PRIMA_BARRA, Global.FL_C_10_10, false);
-        setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.05), Global.FRAME_HEIGHT));
+        setBounds(0, 0, (int)(Global.FRAME_WIDTH * 0.05), Global.FRAME_HEIGHT);
 
         this.sb = sb;
 

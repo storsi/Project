@@ -108,6 +108,7 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
         this.parent = this;
         this.hoverAttivo = false;
 
+        setHoverThread();
         setForeground(Color.WHITE);
         addMouseListener(this);
         setPreferredSize(new Dimension(iconSize, iconSize));
@@ -132,7 +133,7 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
 
     @Override
     public void afterClick() {
-        //outHover();
+        outHover();
         hoverAttivo = false;
 
         switch (tipologia) {
@@ -167,7 +168,7 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
         }
     }
 
-    private void setInfo() {
+    private void setParent() {
         int profondita;
         Component element = this;
         profonditaMax = 0;
@@ -185,35 +186,15 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
 
             element = element.getParent();
         }while(profondita >= 0);
+
+        
     }
 
     @Override
-    public boolean hoverActive() {
-        return false;
-    }
-
-    @Override
-    public int getMilliseconds() {
-        return 0;
-    }
-
-    @Override
-    public void hover() {
-    }
-
-    @Override
-    public void inHover() {
-    }
-
-    @Override
-    public void outHover() {
-    }
-
-    /* @Override
     public void hover() {
         int x;
 
-        if(panel == null) setInfo();
+        if(panel == null) setParent();
 
         Point screenPoint = MouseInfo.getPointerInfo().getLocation();
         SwingUtilities.convertPointFromScreen(screenPoint, panel);
@@ -225,8 +206,8 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
 
         info.setBounds(x, screenPoint.y - h, w, h);
 
-        System.out.println(info);
         panel.add(info, Integer.valueOf(profonditaMax + 100));
+        hoverAttivo = false;
     }
 
     @Override
@@ -247,8 +228,9 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
 
     @Override
     public void outHover() {
+        hoverAttivo = false;
         if(info != null && panel != null) panel.eliminaElemtno(info.getClass().getSimpleName());
-    } */
+    }
 }
 
 class Informazione extends JLabel{
