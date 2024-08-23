@@ -11,6 +11,12 @@ import Progetto.Main.Global;
 public abstract class Overlay extends JPanel{
 
     private int x, y, width, height;
+
+    public Overlay() {
+        setBackground(Global.COLORE_AVVISO);
+        setOpaque(false);
+        setLayout(Global.FL_C_10_10);
+    }
     
     public Overlay(int width, int height) {
 
@@ -23,6 +29,15 @@ public abstract class Overlay extends JPanel{
         setBackground(Global.COLORE_AVVISO);
         setOpaque(false);
         setLayout(Global.FL_C_10_10);
+    }
+
+    public void changeSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+        x = Global.FRAME_WIDTH - (width + ((int)(Global.FRAME_WIDTH * 0.8) - width) / 2);
+        y = (Global.FRAME_HEIGHT - height) / 2;
+
+        setBounds(x, y, width, height);
     }
 
     @Override

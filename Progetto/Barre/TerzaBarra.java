@@ -28,14 +28,20 @@ public class TerzaBarra extends Barra{
     private String nome;
     private Dimension dim;
     private Rectangle rect;
+    private PopUp popUp;
     
-    public TerzaBarra() {
+    public TerzaBarra(PopUp popUp) {
         super(Global.COLORE_TERZA_BARRA,Global.FL_C_0_0, true);
         dim = new Dimension((int)(Global.FRAME_WIDTH * 0.8), Global.FRAME_HEIGHT);
         rect = new Rectangle(new Point(Global.FRAME_WIDTH - (int)dim.getWidth(), 0), dim);
+        
+        this.popUp = popUp;
+        this.popUp.setTerzaBarra(this);
+
 
         setBounds(rect);
         setPreferredSize(dim);
+
 
         setUp();
     }
@@ -49,6 +55,7 @@ public class TerzaBarra extends Barra{
         add(pa);
         add(ba);
         add(pb);
+        add(popUp, JLayeredPane.PALETTE_LAYER);
     }
 
     public void modificaDimensione(int modifica) {
@@ -68,8 +75,14 @@ public class TerzaBarra extends Barra{
             case BtnIcon.ELIMINA:
 
                 String messaggio = "Stai eliminando il database \"" + nome + "\" sei sicuro di continuare? Ogni informazione sarà perduta";
-                getParent().add(new PopUp(Global.AVVISO_WIDTH, Global.AVVISO_HEIGHT, PopUp.ELIMINA_DATABASE, messaggio, this), JLayeredPane.PALETTE_LAYER);
+                //getParent().add(new PopUp(Global.AVVISO_WIDTH, Global.AVVISO_HEIGHT, PopUp.ELIMINA_DATABASE, messaggio, this), JLayeredPane.PALETTE_LAYER);
+                popUp.setMessaggio(messaggio);
+                popUp.setTipologia(PopUp.ELIMINA_DATABASE);
 
+            break;
+            case BtnIcon.AGGIUNGI_TABELLA: 
+                
+                popUp.setTipologia(PopUp.AGGIUNGI_TABELLA);
             break;
         
             default:

@@ -9,6 +9,8 @@ import java.awt.event.KeyListener;
 import javax.swing.BorderFactory;
 import javax.swing.JTextArea;
 
+import Progetto.Main.Global;
+
 public class TextArea extends JTextArea implements KeyListener{
 
     private int limit;
@@ -24,6 +26,8 @@ public class TextArea extends JTextArea implements KeyListener{
         changeSize(dim);
         setWrapStyleWord(true);
         setLineWrap(true);
+
+        setBorder(BorderFactory.createLineBorder(Global.COLORE_PRIMA_BARRA, 3));
     }
 
     public void setCharacterLimit(int limit) {

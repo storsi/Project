@@ -13,17 +13,20 @@ public class BarraDiSeparazione extends JPanel{
     
     public BarraDiSeparazione(int width, Color colore) {
 
-        this.width = width;
-
         setWidth(width);
         setBackground(colore);
 
         setVisible(false);
     }
 
+    public BarraDiSeparazione(int width, Color colore, boolean visible) {
+
+        setWidth(width);
+        setBackground(colore);
+        setVisible(visible);
+    }
+
     public BarraDiSeparazione(int width) {
-        
-        this.width = width;
 
         setWidth(width);
         setBackground(Color.BLACK);

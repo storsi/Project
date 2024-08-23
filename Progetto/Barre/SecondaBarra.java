@@ -38,7 +38,6 @@ public class SecondaBarra extends Barra{
 
         dim_pnlResize = new Dimension((int)getPreferredSize().getWidth(), (int)(getPreferredSize().getHeight() * 0.05));
 
-
         this.tb = tb;
         tb.setSB(this);
         open = true;
