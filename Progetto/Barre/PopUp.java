@@ -21,6 +21,7 @@ import javax.swing.SwingConstants;
 import Progetto.Main.Global;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
 import Progetto.Main.Strumenti.Overlay;
+import Progetto.Main.Strumenti.ScrollPane;
 import Progetto.Main.Strumenti.TextArea;
 
 public class PopUp extends Overlay implements ActionListener{
@@ -37,10 +38,12 @@ public class PopUp extends Overlay implements ActionListener{
 
     //Componenti per l'aggiunta della tabella
     private JPanel pnl_colonne, pnl_creaColonne;
-    private JLabel lbl_colonne, lbl_creaColonne, lbl_nomeColonne, lbl_tipologiaColonna;
+    private JLabel lbl_colonne, lbl_creaColonne, lbl_nomeColonne, lbl_tipologiaColonna, lbl_caratteristicaColonna;
     private TextArea ta_nomeTabella;
     private JRadioButton rbtn_int, rbtn_real, rbtn_text, rbtn_blob;
     private ButtonGroup bg_tipologia;
+    private ScrollPane sp_creaColonna;
+    private Dimension dim_creaColonna;
 
     public PopUp() {
 
@@ -196,7 +199,7 @@ public class PopUp extends Overlay implements ActionListener{
         setUpAzione();
 
         add(pnl_colonne);
-        add(pnl_creaColonne);
+        add(sp_creaColonna);
     }
 
     private void setUpConferma() {
@@ -216,7 +219,7 @@ public class PopUp extends Overlay implements ActionListener{
 
         //Panel delle colonne già create
         pnl_colonne = new JPanel(Global.FL_C_10_10);
-        pnl_colonne.setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.33), (int)(Global.FRAME_HEIGHT * 0.70)));
+        pnl_colonne.setPreferredSize(new Dimension((int)(Global.FRAME_WIDTH * 0.33), (int)(Global.FRAME_HEIGHT * 0.60)));
         pnl_colonne.setOpaque(false);
         pnl_colonne.setVisible(false);
 
@@ -231,10 +234,16 @@ public class PopUp extends Overlay implements ActionListener{
 
 
         //Panel delle colonne da creare
+        sp_creaColonna = new ScrollPane(pnl_colonne.getPreferredSize(), Color.WHITE);
+
+        dim_creaColonna = new Dimension((int)pnl_colonne.getPreferredSize().getWidth() - 20, 1000);
+
         pnl_creaColonne = new JPanel(Global.FL_C_10_10);
-        pnl_creaColonne.setPreferredSize(pnl_colonne.getPreferredSize());
-        pnl_creaColonne.setOpaque(false);
+        pnl_creaColonne.setPreferredSize(dim_creaColonna);
+        pnl_creaColonne.setBackground(Global.COLORE_AVVISO);
         pnl_creaColonne.setVisible(false);
+
+        sp_creaColonna.setViewportView(pnl_creaColonne);
 
         lbl_creaColonne = new JLabel("CREA COLONNA:", SwingConstants.CENTER);
         lbl_creaColonne.setFont(Global.FONT_GRANDE);
@@ -263,6 +272,11 @@ public class PopUp extends Overlay implements ActionListener{
         rbtn_blob = setUpRadioButton("BLOB", bg_tipologia);
 
         bg_tipologia.add(rbtn_int);
+
+        lbl_caratteristicaColonna = new JLabel("CARATTERISTICA:", SwingConstants.CENTER);
+        lbl_caratteristicaColonna.setFont(Global.FONT_MEDIO);
+        lbl_caratteristicaColonna.setPreferredSize(lbl_colonne.getPreferredSize());
+        lbl_caratteristicaColonna.setForeground(Color.WHITE);
         
         pnl_creaColonne.add(lbl_creaColonne);
         pnl_creaColonne.add(new BarraDiSeparazione((int)(pnl_creaColonne.getPreferredSize().getWidth() * 0.6), Color.WHITE, true));
@@ -274,6 +288,7 @@ public class PopUp extends Overlay implements ActionListener{
         pnl_creaColonne.add(rbtn_real);
         pnl_creaColonne.add(rbtn_text);
         pnl_creaColonne.add(rbtn_blob);
+        pnl_creaColonne.add(lbl_caratteristicaColonna);
     }
 
     private JRadioButton setUpRadioButton(String text, ButtonGroup bg) {
@@ -283,7 +298,8 @@ public class PopUp extends Overlay implements ActionListener{
         rbtn.setOpaque(false);
         rbtn.setForeground(Color.WHITE);
         rbtn.setFocusPainted(false);
-        rbtn.setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
+        if(text.equals("INTEGER")) rbtn.setIcon(Global.getIcon("RadioButtonSelected.png", 10));
+        else rbtn.setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
         rbtn.addActionListener(this);
 
         bg.add(rbtn);
