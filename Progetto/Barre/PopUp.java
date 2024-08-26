@@ -1,24 +1,22 @@
 package Progetto.Barre;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.Color;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
-import javax.swing.AbstractButton;
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 
 import Progetto.Main.Global;
+import Progetto.Main.Interface.Hover;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
 import Progetto.Main.Strumenti.Overlay;
 import Progetto.Main.Strumenti.ScrollPane;
@@ -40,15 +38,17 @@ public class PopUp extends Overlay implements ActionListener{
     private JPanel pnl_colonne, pnl_creaColonne;
     private JLabel lbl_colonne, lbl_creaColonne, lbl_nomeColonne, lbl_tipologiaColonna, lbl_caratteristicaColonna;
     private TextArea ta_nomeTabella;
-    private JRadioButton rbtn_int, rbtn_real, rbtn_text, rbtn_blob;
     private ButtonGroup bg_tipologia;
     private ScrollPane sp_creaColonna;
     private Dimension dim_creaColonna;
+    private RadioButton[] radioButtons;
+    private BtnIcon btn_creaColonna, btn_resetColonna;
 
     public PopUp() {
 
         setUp();
         setVisible(false);
+        
     }
 
     public void setTerzaBarra(TerzaBarra tb) {
@@ -250,72 +250,270 @@ public class PopUp extends Overlay implements ActionListener{
         lbl_creaColonne.setPreferredSize(lbl_colonne.getPreferredSize());
         lbl_creaColonne.setForeground(Color.WHITE);
 
-        lbl_nomeColonne = new JLabel("NOME COLONNA:", SwingConstants.CENTER);
+        lbl_nomeColonne = new JLabel("<html><b>NOME COLONNA:</b></html>", SwingConstants.CENTER);
         lbl_nomeColonne.setFont(Global.FONT_MEDIO);
         lbl_nomeColonne.setPreferredSize(lbl_colonne.getPreferredSize());
-        lbl_nomeColonne.setForeground(Color.WHITE);
+        lbl_nomeColonne.setForeground(lbl_creaColonne.getForeground());
 
         ta_nomeTabella = new TextArea(Global.FONT_MEDIO, new Dimension((int)(pnl_creaColonne.getPreferredSize().getWidth() * 0.6), 30));
         ta_nomeTabella.setCharacterLimit(24);
 
-        lbl_tipologiaColonna = new JLabel("TIPOLOGIA:", SwingConstants.CENTER);
+        lbl_tipologiaColonna = new JLabel("<html><b>TIPOLOGIA:</b></html>", SwingConstants.CENTER);
         lbl_tipologiaColonna.setFont(Global.FONT_MEDIO);
         lbl_tipologiaColonna.setPreferredSize(lbl_colonne.getPreferredSize());
-        lbl_tipologiaColonna.setForeground(Color.WHITE);
+        lbl_tipologiaColonna.setForeground(lbl_creaColonne.getForeground());
+
+        lbl_caratteristicaColonna = new JLabel("<html><b>CARATTERISTICA:</b></html>", SwingConstants.CENTER);
+        lbl_caratteristicaColonna.setFont(Global.FONT_MEDIO);
+        lbl_caratteristicaColonna.setPreferredSize(lbl_colonne.getPreferredSize());
+        lbl_caratteristicaColonna.setForeground(lbl_creaColonne.getForeground());
 
         bg_tipologia = new ButtonGroup();
 
-        rbtn_int = setUpRadioButton("INTEGER", bg_tipologia);
-        rbtn_int.setSelected(true);
-        rbtn_real = setUpRadioButton("REAL", bg_tipologia);
-        rbtn_text = setUpRadioButton("TEXT", bg_tipologia);
-        rbtn_blob = setUpRadioButton("BLOB", bg_tipologia);
-
-        bg_tipologia.add(rbtn_int);
-
-        lbl_caratteristicaColonna = new JLabel("CARATTERISTICA:", SwingConstants.CENTER);
-        lbl_caratteristicaColonna.setFont(Global.FONT_MEDIO);
-        lbl_caratteristicaColonna.setPreferredSize(lbl_colonne.getPreferredSize());
-        lbl_caratteristicaColonna.setForeground(Color.WHITE);
-        
         pnl_creaColonne.add(lbl_creaColonne);
-        pnl_creaColonne.add(new BarraDiSeparazione((int)(pnl_creaColonne.getPreferredSize().getWidth() * 0.6), Color.WHITE, true));
+        pnl_creaColonne.add(new BarraDiSeparazione((int)(pnl_creaColonne.getPreferredSize().getWidth() * 0.6), lbl_creaColonne.getForeground(), true));
         pnl_creaColonne.add(Box.createVerticalStrut(20));
         pnl_creaColonne.add(lbl_nomeColonne);
         pnl_creaColonne.add(ta_nomeTabella);
+        pnl_creaColonne.add(Box.createVerticalStrut(40));
         pnl_creaColonne.add(lbl_tipologiaColonna);
-        pnl_creaColonne.add(rbtn_int);
-        pnl_creaColonne.add(rbtn_real);
-        pnl_creaColonne.add(rbtn_text);
-        pnl_creaColonne.add(rbtn_blob);
-        pnl_creaColonne.add(lbl_caratteristicaColonna);
-    }
+        pnl_creaColonne.add(Box.createVerticalStrut(40));
+    
+        RadioButton rbtn;
+        boolean bg, needWord;
+        radioButtons = new RadioButton[RadioButton.getNumRadioButtons()];
 
-    private JRadioButton setUpRadioButton(String text, ButtonGroup bg) {
-        
-        JRadioButton rbtn = new JRadioButton(text);
-        rbtn.setFont(Global.FONT_MEDIO);
-        rbtn.setOpaque(false);
-        rbtn.setForeground(Color.WHITE);
-        rbtn.setFocusPainted(false);
-        if(text.equals("INTEGER")) rbtn.setIcon(Global.getIcon("RadioButtonSelected.png", 10));
-        else rbtn.setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
-        rbtn.addActionListener(this);
+        for(int i = 0; i < RadioButton.getNumRadioButtons(); i++) {
+            bg = needWord = false;
 
-        bg.add(rbtn);
+            if(i < 4) bg = true;
+            else if(i == 8 || i == 9 || i == 10) needWord = true;
 
-        return rbtn;
+            if(bg) rbtn = new RadioButton(i, needWord, bg_tipologia, this);
+            else rbtn = new RadioButton(i, needWord, this);
+
+            if(i == 4) {
+                pnl_creaColonne.add(Box.createVerticalStrut(40));
+                pnl_creaColonne.add(lbl_caratteristicaColonna);
+                pnl_creaColonne.add(Box.createVerticalStrut(40));
+            }
+            pnl_creaColonne.add(rbtn);
+            radioButtons[i] = rbtn;
+        }
+
+        checkRadioButtonsTipologia();
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {       
+    public void actionPerformed(ActionEvent e) {
+        
+        checkRadioButtonCaratteristica();
+    }
 
-        Enumeration<AbstractButton> btns = bg_tipologia.getElements();
-        while(btns.hasMoreElements()) {
-            AbstractButton button = btns.nextElement();
+    private void checkRadioButtonsTipologia() {
+        if(radioButtons[0].isSelected()) {
+            
+            radioButtons[8].abilita();
+            radioButtons[7].abilita();
+            
+            radioButtons[10].disabilita();
 
-            if(button.isSelected()) button.setIcon(Global.getIcon("RadioButtonSelected.png", 10));
-            else button.setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
+        } else if(radioButtons[1].isSelected()) {
+
+            radioButtons[8].abilita();
+            
+            radioButtons[7].disabilita();
+            radioButtons[10].disabilita();
+
+        } else if(radioButtons[2].isSelected()) {
+            
+            radioButtons[8].abilita();
+            radioButtons[10].abilita();
+
+            
+            radioButtons[7].disabilita();
+        } else {
+            
+            radioButtons[7].disabilita();
+            radioButtons[8].disabilita();
+            radioButtons[10].disabilita();
         }
+
+        aggiornaRadioButtons();
+    }
+
+    private void checkRadioButtonCaratteristica() {
+        
+        if(radioButtons[7].isSelected()) {
+
+            radioButtons[4].setSelected(true);
+
+        } 
+        
+        if(radioButtons[4].isSelected()) {
+
+            radioButtons[5].setSelected(true);
+            radioButtons[6].setSelected(true);
+
+        }
+        checkRadioButtonsTipologia();
+    }
+
+    private void aggiornaRadioButtons() {
+        
+        for(int i = 0; i < radioButtons.length; i++) {
+
+            if(radioButtons[i].isSelected()) radioButtons[i].setIcon(Global.getIcon("RadioButtonSelected.png", 10));
+            else radioButtons[i].setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
+
+            if(!radioButtons[i].isEnabled()) radioButtons[i].setIcon(Global.getIcon("Annulla.png", 10));
+        }
+    }
+}
+
+
+class RadioButton extends JRadioButton implements Hover{
+
+    private int indice;
+    private String text;
+    private boolean needWord;
+    private ButtonGroup bg;
+    private static String[] radioButtonNames = {"INTEGER", "REAL", "TEXT", "BLOB", "PRIMARY KEY", "UNIQUE", "NOT NULL",
+                                    "AUTO INCREMENT", "DEFAULT", "CHECK", "COLLATE"};
+    //0 INTEGER, 1 REAL, 2 TEXT, 3 BLOB, 4 PRIMARY KEY, 5 UNIQUE, 6 NOT NULL, 7 AUTO INCREMENT, 8 DEFAULT, 9 CHECK, 10 COLLATE
+
+    private static String[] descrizioneRadioButtons = {"Permette l'inserimento dei soli valori numerici interi"};
+
+    public RadioButton(int indice, boolean needWord, ActionListener al) {
+        this.indice = indice;
+        this.text = radioButtonNames[indice];
+        this.needWord = needWord;
+        this.bg = null;
+
+        creaRadioButton(al);
+
+    }
+    public RadioButton(int indice, boolean needWord, ButtonGroup bg, ActionListener al) {
+        this.indice = indice;
+        this.text = radioButtonNames[indice];
+        this.needWord = needWord;
+        this.bg = bg;
+
+        creaRadioButton(al);
+
+        bg.add(this);
+    }
+
+    private void creaRadioButton(ActionListener al) {
+        
+        setText(text);
+        setFont(Global.FONT_PICCOLO);
+        setOpaque(false);
+        setForeground(Color.WHITE);
+        setFocusPainted(false);
+        setHoverThread();
+        addMouseListener(this);
+        
+        if(indice == 0) {
+            setSelected(true);
+            setIcon(Global.getIcon("RadioButtonSelected.png", 10));
+        }
+        else setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
+        
+        addActionListener(al);
+        
+    }
+
+    public int getIndice() {
+        return indice;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public boolean needWord() {
+        return needWord;
+    }
+
+    public static int getNumRadioButtons() {
+        return radioButtonNames.length;
+    }
+
+    public void abilita() {
+        setEnabled(true);
+        setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
+    }
+
+    public void disabilita() {
+        setSelected(false);
+        setEnabled(false);
+    }
+    @Override
+    public boolean hoverActive() {
+        return false;
+    }
+    @Override
+    public int getMilliseconds() {
+        return 800;
+    }
+    @Override
+    public void hover() {
+    }
+    @Override
+    public void inHover() {
+    }
+    @Override
+    public void outHover() {
+    }
+}
+
+class Informazione extends JLabel {
+
+
+    public Informazione() {
+
+        setBackground(new Color(245, 245, 220));
+        setOpaque(false);
+        setFont(Global.FONT_PICCOLO);
+        setForeground(Color.BLACK);
+
+    }
+
+    public void setText(String text) {
+        setText(manageText(text));
+    }
+
+    private String manageText(String text) {
+        String nuovotesto = "<html><p>";
+
+        boolean aCapo = false;
+
+        for(int i = 0; i < text.length(); i++) {
+            nuovotesto += text.charAt(i);
+            if(i != 0 && i % 30 == 0) aCapo = true;
+
+            if(aCapo && text.charAt(i) == ' ') {
+                nuovotesto += "<br>";
+                aCapo = false;
+            }
+        }
+
+        nuovotesto += "</p></html>";
+
+        return nuovotesto;
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+        int raggioCurvatura = 20;
+
+        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g2d.setColor(getBackground());
+        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), raggioCurvatura, raggioCurvatura);
+
+        super.paintComponent(g);
     }
 }
