@@ -11,6 +11,8 @@ import java.awt.BorderLayout;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import java.util.regex.Pattern;
+
 import Progetto.Comunicazione.Comunicatore;
 
 public class Global {
@@ -25,7 +27,7 @@ public class Global {
 
     public static final int ICON_SIZE = (int)(FRAME_WIDTH * 0.03);
 
-    public static String pathToDB = "../../OneDrive - Politecnico di Milano/Programmazione/Sqlite/Databases/";
+    public static String pathToDB = getDataBasePath();
 
     //Colori
     public static final Color COLORE_PRIMA_BARRA = new Color(46,41,58);
@@ -56,6 +58,36 @@ public class Global {
 
 
     /************************************ FUNZIONI **************************************************/
+
+    public static String getDataBasePath() {
+        File f;
+        String path = "";
+        String[] percorsi;
+        int counter = 0;
+
+        try {
+            do{
+                if(counter == 2) {
+                    path += "/";
+                    counter = 0;
+                }
+
+                path += ".";
+                f = new File(path);
+                percorsi = f.getCanonicalPath().split(Pattern.quote(File.separator)); 
+                counter++;
+            
+            }while(percorsi.length != 3);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        path += "/OneDrive - Politecnico di Milano/Programmazione/Sqlite/Databases/";
+
+        return path;
+    }
+
     public static Icon getIcon(String path, int w) {
         Image im = null;
 
@@ -64,6 +96,7 @@ public class Global {
 
         try {
             im = ImageIO.read(new File("Progetto/img/" + path));
+
         } catch(Exception e){
             System.out.println("Errore nell'apertura del file");
         }
