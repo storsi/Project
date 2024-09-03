@@ -4,9 +4,6 @@ import java.awt.Dimension;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 
 import javax.swing.Box;
 import javax.swing.ButtonGroup;
@@ -18,6 +15,7 @@ import javax.swing.SwingConstants;
 import Progetto.Main.Global;
 import Progetto.Main.Interface.Hover;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
+import Progetto.Main.Strumenti.Informazione;
 import Progetto.Main.Strumenti.Overlay;
 import Progetto.Main.Strumenti.ScrollPane;
 import Progetto.Main.Strumenti.TextArea;
@@ -35,7 +33,7 @@ public class PopUp extends Overlay implements ActionListener{
     private Dimension dim_avviso;
 
     //Componenti per l'aggiunta della tabella
-    private JPanel pnl_colonne, pnl_creaColonne;
+    private JPanel pnl_colonne, pnl_creaColonne, pnl_creaColonneRadioButtons;
     private JLabel lbl_colonne, lbl_creaColonne, lbl_nomeColonne, lbl_tipologiaColonna, lbl_caratteristicaColonna;
     private TextArea ta_nomeTabella;
     private ButtonGroup bg_tipologia;
@@ -250,6 +248,8 @@ public class PopUp extends Overlay implements ActionListener{
         lbl_creaColonne.setPreferredSize(lbl_colonne.getPreferredSize());
         lbl_creaColonne.setForeground(Color.WHITE);
 
+        pnl_creaColonneRadioButtons = new JPanel(Global.FL_C_10_10);
+
         lbl_nomeColonne = new JLabel("<html><b>NOME COLONNA:</b></html>", SwingConstants.CENTER);
         lbl_nomeColonne.setFont(Global.FONT_MEDIO);
         lbl_nomeColonne.setPreferredSize(lbl_colonne.getPreferredSize());
@@ -374,17 +374,28 @@ public class PopUp extends Overlay implements ActionListener{
 
 class RadioButton extends JRadioButton implements Hover{
 
+    private Informazione info;
     private int indice;
     private String text;
-    private boolean needWord;
+    private boolean needWord, hoverAttivo;
     private ButtonGroup bg;
     private static String[] radioButtonNames = {"INTEGER", "REAL", "TEXT", "BLOB", "PRIMARY KEY", "UNIQUE", "NOT NULL",
                                     "AUTO INCREMENT", "DEFAULT", "CHECK", "COLLATE"};
     //0 INTEGER, 1 REAL, 2 TEXT, 3 BLOB, 4 PRIMARY KEY, 5 UNIQUE, 6 NOT NULL, 7 AUTO INCREMENT, 8 DEFAULT, 9 CHECK, 10 COLLATE
 
-    private static String[] descrizioneRadioButtons = {"Permette l'inserimento dei soli valori numerici interi"};
-
+    private static String[] descrizioneRadioButtons = {"Permette l'inserimento dei soli valori numerici interi. <br> <br> Esclude: collate", 
+    "Permette l'inserimento di numeri anche con una parte decimale, con un massimo di 2 cifre dopo la virgola. <br> <br> Esclude: collate | autoincrement", 
+    "Rappresenta stringhe di caratteri ed include spazi, simboli, numeri (trattati come caratteri) e punteggiatura. <br> <br> Esclude: autoincrement",
+    "È usato per memorizzare dati binari senza alcuna conversione o interpretazione, come immagini, file audio, file video e file binari. <br> <br> Esclude: collate | autoincrement | default",
+    "Impone l'inserimento di un record unico e non nullo rispetto agli altri elementi della colonna. <br> <br> Impone: Unique | Not Null <br> Uso: tutte le tipologie",
+    "Assicura che tutti i record di una colonna siano unici, senza duplicati. <br> <br> Impone: nessuna imposizione <br> Uso: tutte le tipologie",
+    "Impedisce a questa colonna di possedere valori nulli. Ogni riga ha quindi un valore. <br> <br> Impone: Nessuna imposizione <br> Uso: tutte le tipologie",
+    "Genera automaticamente valori sequenziali unici per la colonna. Ogni nuovo record riceve un valore maggiore del precedente. <br> <br> Impone: Primary Key <br> Uso: Integer",
+    "Specifica un valore predefinito per una colonna se non viene fornito alcun valore durante l'inserimento di un record. <br> <br> Impone: nessuna imposizione <br> Uso: Integer | Real | Text",
+    "impone un vincolo personalizzato su una colonna, assicurando che i dati inseriti soddisfino una determinata condizione <br> <br> Impone: nessuna imposizione <br> Uso: tutte le tipologie",
+    "definisce la modalità di confronto delle stringhe per una colonna di tipo \"TEXT\", influenzando l'ordinamento e le ricerche. <br> <br> Impone: nessuna imposizione <br> Uso: text"};
     public RadioButton(int indice, boolean needWord, ActionListener al) {
+        
         this.indice = indice;
         this.text = radioButtonNames[indice];
         this.needWord = needWord;
@@ -414,6 +425,9 @@ class RadioButton extends JRadioButton implements Hover{
         setHoverThread();
         addMouseListener(this);
         
+        this.info = new Informazione();
+        this.hoverAttivo = false;
+        
         if(indice == 0) {
             setSelected(true);
             setIcon(Global.getIcon("RadioButtonSelected.png", 10));
@@ -421,7 +435,6 @@ class RadioButton extends JRadioButton implements Hover{
         else setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
         
         addActionListener(al);
-        
     }
 
     public int getIndice() {
@@ -451,7 +464,7 @@ class RadioButton extends JRadioButton implements Hover{
     }
     @Override
     public boolean hoverActive() {
-        return false;
+        return hoverAttivo;
     }
     @Override
     public int getMilliseconds() {
@@ -459,61 +472,22 @@ class RadioButton extends JRadioButton implements Hover{
     }
     @Override
     public void hover() {
+        info.mostra();
+
+        hoverAttivo = false;
     }
     @Override
     public void inHover() {
+        hoverAttivo = true;
+        info.setTesto(descrizioneRadioButtons[indice]);
+        info.getPanel(this);
+        
+        attivaHover();
     }
     @Override
     public void outHover() {
-    }
-}
-
-class Informazione extends JLabel {
-
-
-    public Informazione() {
-
-        setBackground(new Color(245, 245, 220));
-        setOpaque(false);
-        setFont(Global.FONT_PICCOLO);
-        setForeground(Color.BLACK);
-
-    }
-
-    public void setText(String text) {
-        setText(manageText(text));
-    }
-
-    private String manageText(String text) {
-        String nuovotesto = "<html><p>";
-
-        boolean aCapo = false;
-
-        for(int i = 0; i < text.length(); i++) {
-            nuovotesto += text.charAt(i);
-            if(i != 0 && i % 30 == 0) aCapo = true;
-
-            if(aCapo && text.charAt(i) == ' ') {
-                nuovotesto += "<br>";
-                aCapo = false;
-            }
-        }
-
-        nuovotesto += "</p></html>";
-
-        return nuovotesto;
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        int raggioCurvatura = 20;
-
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2d.setColor(getBackground());
-        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), raggioCurvatura, raggioCurvatura);
-
-        super.paintComponent(g);
+        hoverAttivo = false;
+        
+        info.nascondi();
     }
 }

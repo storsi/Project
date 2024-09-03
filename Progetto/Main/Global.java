@@ -25,7 +25,7 @@ public class Global {
 
     public static final int ICON_SIZE = (int)(FRAME_WIDTH * 0.03);
 
-    public static String pathToDB = "C:/Users/Matteo/OneDrive - Politecnico di Milano/Programmazione/SqLite/Databases/";
+    public static String pathToDB = "../../OneDrive - Politecnico di Milano/Programmazione/Sqlite/Databases/";
 
     //Colori
     public static final Color COLORE_PRIMA_BARRA = new Color(46,41,58);
@@ -59,8 +59,11 @@ public class Global {
     public static Icon getIcon(String path, int w) {
         Image im = null;
 
+
+        
+
         try {
-            im = ImageIO.read(new File("./Progetto/img/" + path));
+            im = ImageIO.read(new File("Progetto/img/" + path));
         } catch(Exception e){
             System.out.println("Errore nell'apertura del file");
         }

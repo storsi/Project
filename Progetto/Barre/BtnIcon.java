@@ -19,6 +19,8 @@ import Progetto.Main.Global;
 import Progetto.Main.Panel;
 import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Interface.Hover;
+import Progetto.Main.Strumenti.Informazione;
+import Progetto.Main.Strumenti.Label;
 
 public class BtnIcon extends JLabel implements Clickable, Hover{
 
@@ -32,7 +34,6 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
     private String messaggio, categoria;
     private int tipologia, iconSize, profonditaMax;
     private Icon icon;
-    private Informazione info;
     private SecondaBarra sb;
     private PanelTabella pt;
     private PopUp avviso;
@@ -40,6 +41,7 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
     private boolean infoActive, hoverAttivo, hoverable;
     private Component parent;
     private Panel panel;
+    private Informazione info;
 
     public BtnIcon(int tipologia, Barra barra) {
 
@@ -103,7 +105,8 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
         this.tipologia = tipologia;
         this.messaggio = arrayIcone[tipologia];
         this.icon = Global.getIcon(arrayIcone[tipologia].replace(' ', '_') + ".png", iconSize);
-        this.info = new Informazione(messaggio);
+        this.info = new Informazione();
+
         this.infoActive = false;
         this.parent = this;
         this.hoverAttivo = false;
@@ -168,45 +171,11 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
         }
     }
 
-    private void setParent() {
-        int profondita;
-        Component element = this;
-        profonditaMax = 0;
-        parent = this;
-
-        do{
-            parent = parent.getParent();
-        }while(!(parent.getClass().getSimpleName().equals("Panel")));
-
-        panel = (Panel)parent;
-
-        do{
-            profondita = ((JLayeredPane)panel).getLayer(element);
-            profonditaMax = (profondita > profonditaMax) ? profondita : profonditaMax;
-
-            element = element.getParent();
-        }while(profondita >= 0);
-
-        
-    }
-
     @Override
     public void hover() {
-        int x;
 
-        if(panel == null) setParent();
+        info.mostra();
 
-        Point screenPoint = MouseInfo.getPointerInfo().getLocation();
-        SwingUtilities.convertPointFromScreen(screenPoint, panel);
-
-        int w = messaggio.length() * 9, h = (int)(Global.ICON_SIZE * 0.5);
-
-        if(screenPoint.x + w > Global.FRAME_WIDTH) x = screenPoint.x - (screenPoint.x + w - Global.FRAME_WIDTH + 10);
-        else x = screenPoint.x;
-
-        info.setBounds(x, screenPoint.y - h, w, h);
-
-        panel.add(info, Integer.valueOf(profonditaMax + 100));
         hoverAttivo = false;
     }
 
@@ -223,38 +192,16 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
     @Override
     public void inHover() {
         hoverAttivo = true;
+        info.setTesto(messaggio);
+        info.getPanel(this);
+        
         attivaHover();
     }
 
     @Override
     public void outHover() {
         hoverAttivo = false;
-        if(info != null && panel != null) panel.eliminaElemtno(info.getClass().getSimpleName());
-    }
-}
-
-class Informazione extends JLabel{
-
-    public Informazione(String messaggio) {
         
-        setText(messaggio.toUpperCase());
-        setFont(Global.FONT_PICCOLO);
-        setHorizontalAlignment(SwingUtilities.CENTER);
-        setForeground(Color.BLACK);
-        setOpaque(false);
-        setBackground(new Color(245, 245, 220));
-    }
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-        int raggioCurvatura = 20;
-
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        g2d.setColor(getBackground());
-        g2d.fillRoundRect(0, 0, getWidth(), getHeight(), raggioCurvatura, raggioCurvatura);
-
-        super.paintComponent(g);
+        info.nascondi();
     }
 }
