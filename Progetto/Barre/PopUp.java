@@ -12,6 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.SwingConstants;
 
+import Progetto.DBM.CreaTabella;
 import Progetto.Main.Global;
 import Progetto.Main.Interface.Hover;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
@@ -41,6 +42,8 @@ public class PopUp extends Overlay implements ActionListener{
     private Dimension dim_creaColonna;
     private RadioButton[] radioButtons;
     private BtnIcon btn_creaColonna, btn_resetColonna;
+
+    private CreaTabella creaTabella;
 
     public PopUp() {
 
@@ -86,8 +89,7 @@ public class PopUp extends Overlay implements ActionListener{
         dim_avviso.setSize(getWidth(), (int)(Global.AVVISO_WIDTH * 0.1));
         lbl_avviso.setHorizontalAlignment(SwingConstants.LEFT);
 
-        pnl_colonne.setVisible(true);
-        pnl_creaColonne.setVisible(true);
+        creaTabella.setVisible(true);
 
         pnl_scelte.setVisible(false);
         lbl_descrizione.setVisible(false);
@@ -196,8 +198,8 @@ public class PopUp extends Overlay implements ActionListener{
 
         setUpAzione();
 
-        add(pnl_colonne);
-        add(sp_creaColonna);
+        //add(pnl_colonne);
+        //add(sp_creaColonna);
     }
 
     private void setUpConferma() {
@@ -213,7 +215,10 @@ public class PopUp extends Overlay implements ActionListener{
     }
 
     private void setUpAzione() {
-        //Set up panels per la creazione della tabella
+        creaTabella = new CreaTabella();
+        add(creaTabella);
+
+        /* //Set up panels per la creazione della tabella
 
         //Panel delle colonne già create
         pnl_colonne = new JPanel(Global.FL_C_10_10);
@@ -301,7 +306,7 @@ public class PopUp extends Overlay implements ActionListener{
             radioButtons[i] = rbtn;
         }
 
-        checkRadioButtonsTipologia();
+        checkRadioButtonsTipologia(); */
     }
 
     @Override

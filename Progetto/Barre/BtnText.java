@@ -37,6 +37,9 @@ public class BtnText extends JLabel implements Hover, Animated, Clickable{
 
         lbl_nome = new JLabel("\u2022 " + text.toUpperCase());
         lbl_nome.setBackground(sb.getBackground());
+
+        setOpaque(false);
+        setBackground(Color.RED);
         
         setPreferredSize(new Dimension((int)sb.getPreferredSize().getWidth() - 5, 25));
         setUp(Color.WHITE);
@@ -54,12 +57,15 @@ public class BtnText extends JLabel implements Hover, Animated, Clickable{
         lbl_nome = new JLabel("\u2022 " + text.toUpperCase());
         lbl_nome.setBackground(pt.getBackground());
 
+        setOpaque(false);
+        setBackground(Color.RED);
+
         setPreferredSize(new Dimension((int)pt.getPreferredSize().getWidth() - 5, 25));
         setUp(Color.BLACK);
     }
 
     private void setUp(Color lblForeground) {
-        this.lunghezzaTesto = text.length() * 11;
+        
 
         setLayout(Global.FL_L_0_0);
         setAnimationThread();
@@ -67,17 +73,18 @@ public class BtnText extends JLabel implements Hover, Animated, Clickable{
         
         lbl_nome.setForeground(lblForeground);
         lbl_nome.setFont(Global.FONT_MEDIO);
-        lbl_nome.setPreferredSize(new Dimension(lunghezzaTesto + 20, 20));
+        lbl_nome.setPreferredSize(new Dimension((int)getPreferredSize().getWidth(), 20));
         lbl_nome.addMouseListener(this);
         lbl_nome.setOpaque(true);
+
+        this.lunghezzaTesto = text.length() * getFont().getSize();
         
 
         bds = new BarraDiSeparazione((int)wBds, lbl_nome.getForeground());
         bds.setVisible(true);
 
         add(lbl_nome);
-        add(Box.createHorizontalStrut((int)getPreferredSize().getWidth() - (lunghezzaTesto + 20)));
-        add(Box.createHorizontalStrut(18));
+        add(Box.createHorizontalStrut(14));
         add(bds);
     }
 
