@@ -8,6 +8,8 @@ import javax.swing.ButtonGroup;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import Progetto.Barre.BtnIcon;
 import Progetto.Main.Global;
@@ -16,7 +18,7 @@ import Progetto.Main.Strumenti.RadioButton;
 import Progetto.Main.Strumenti.ScrollPane;
 import Progetto.Main.Strumenti.TextArea;
 
-public class CreaTabella extends JPanel{
+public class CreaTabella extends JPanel implements ActionListener{
 
     //VARIABILI GENERALI
     /**
@@ -127,7 +129,7 @@ public class CreaTabella extends JPanel{
      * - Pulsante con lo scopo di resettare tutte le informazioni che abbiamo inserito sulla colonna corrente
      *   senza però crearla
      */
-    private BtnIcon btn_creaColonna, btn_resetColonna;
+    private BtnIcon btn_creaColonna, btn_resetColonna, btn_creaTabella;
 
     /**
      * Barra che separa il titolo (lbl_creaColonna) con il Panel (pnl_creaColonneInformazioni)
@@ -270,7 +272,7 @@ public class CreaTabella extends JPanel{
         lbl_tipologia.setFont(Global.FONT_MEDIO);
 
         //Creazione del primo gruppo di RadioButton destinati alla sezione Tipologia (sono 4)
-        for(int i = 0; i < 4; i++) radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], bg_tipologia);
+        for(int i = 0; i < 4; i++) radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], bg_tipologia, this);
 
         lbl_caratteristiche = new JLabel("CARATTERISTICA:", SwingConstants.CENTER);
         lbl_caratteristiche.setPreferredSize(dim_labelNormale);
@@ -283,23 +285,20 @@ public class CreaTabella extends JPanel{
          */
         for(int i = 4; i < radioButtonNames.length; i++) {
             //Gli ultimi tre RadioButton hanno necessità di maggiori informazioni, quini needWord = true
-            if(i >= 8) radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], true);
-            else radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], false);
+            if(i >= 8) radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], true, this);
+            else radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], false, this);
         }
 
         /**
          * Aggiungiamo tutti gli elementi del Panel pnl_creaColonnaInformazioni
          */
         pnl_creaColonnaInformazioni.add(lbl_nomeColonna);
-        pnl_creaColonnaInformazioni.add(Box.createVerticalStrut(60));
         pnl_creaColonnaInformazioni.add(ta_nomeColonna);
         pnl_creaColonnaInformazioni.add(lbl_tipologia);
-        pnl_creaColonnaInformazioni.add(Box.createVerticalStrut(60));
         
         //Aggiungiamo i primi 4 RadioButtons con un ciclo for
         for(int i = 0; i < 4; i++) pnl_creaColonnaInformazioni.add(radioButtons[i]);
         
-        pnl_creaColonnaInformazioni.add(Box.createVerticalStrut(60));
         pnl_creaColonnaInformazioni.add(lbl_caratteristiche);
         
         
@@ -314,5 +313,71 @@ public class CreaTabella extends JPanel{
         pnl_creaColonna.add(bds_creaColonne);
         pnl_creaColonna.add(Box.createVerticalStrut(30));
         pnl_creaColonna.add(pnl_creaColonnaInformazioni);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        checkRadioButtonCaratteristica();
+    }
+
+    private void checkRadioButtonsTipologia() {
+        if(radioButtons[0].isSelected()) {
+            
+            radioButtons[8].abilita();
+            radioButtons[7].abilita();
+            
+            radioButtons[10].disabilita();
+
+        } else if(radioButtons[1].isSelected()) {
+
+            radioButtons[8].abilita();
+            
+            radioButtons[7].disabilita();
+            radioButtons[10].disabilita();
+
+        } else if(radioButtons[2].isSelected()) {
+            
+            radioButtons[8].abilita();
+            radioButtons[10].abilita();
+
+            
+            radioButtons[7].disabilita();
+        } else {
+            
+            radioButtons[7].disabilita();
+            radioButtons[8].disabilita();
+            radioButtons[10].disabilita();
+        }
+
+        aggiornaRadioButtons();
+    }
+
+    private void checkRadioButtonCaratteristica() {
+        
+        if(radioButtons[7].isSelected()) {
+
+            radioButtons[4].setSelected(true);
+
+        } 
+        
+        if(radioButtons[4].isSelected()) {
+
+            radioButtons[5].setSelected(true);
+            radioButtons[6].setSelected(true);
+
+        }
+        checkRadioButtonsTipologia();
+    }
+
+    private void aggiornaRadioButtons() {
+        
+        for(int i = 0; i < radioButtons.length; i++) {
+
+            if(radioButtons[i].isSelected()) radioButtons[i].setIcon(Global.getIcon("RadioButtonSelected.png", 10));
+            else radioButtons[i].setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
+
+            if(!radioButtons[i].isEnabled()) radioButtons[i].setIcon(Global.getIcon("Annulla.png", 10));
+        }
     }
 }

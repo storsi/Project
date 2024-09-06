@@ -53,7 +53,7 @@ public class RadioButton extends JRadioButton implements Hover{
      * @param messaggio
      * @param needWord
      */
-    public RadioButton(int indice, String text, String messaggio, boolean needWord) {
+    public RadioButton(int indice, String text, String messaggio, boolean needWord, ActionListener al) {
         /**
          * Assegnazione delle variabili dei parametri alle variabili della classe
          */
@@ -76,6 +76,11 @@ public class RadioButton extends JRadioButton implements Hover{
          */
         this.hoverActive = false;
 
+        /**
+         * Setto l'actionListener
+         */
+        addActionListener(al);
+
         setUpRadioButton();
     }
 
@@ -86,7 +91,7 @@ public class RadioButton extends JRadioButton implements Hover{
      * @param messaggio
      * @param bg
      */
-    public RadioButton(int indice, String text, String messaggio, ButtonGroup bg) {
+    public RadioButton(int indice, String text, String messaggio, ButtonGroup bg, ActionListener al) {
         /**
          * Assegnazione delle variabili dei parametri alle variabili della classe
          */
@@ -115,6 +120,16 @@ public class RadioButton extends JRadioButton implements Hover{
          */
         this.hoverActive = false;
 
+        /*
+         * Aggiungo il RadioButton al ButtonGroup
+         */
+        bg.add(this);
+
+        /**
+         * Setto l'actionListener
+         */
+        addActionListener(al);
+
         setUpRadioButton();
     }
 
@@ -139,15 +154,6 @@ public class RadioButton extends JRadioButton implements Hover{
          */
         if(indice == 0) seleziona();
         else deseleziona();
-    }
-
-    /**
-     * Funzione che permette ai RadioButton di avere eventualmente uno stesso actionListener senza
-     * doverlo creare ogni volte uno nuovo 
-     * @param al Istanza della classe ActionListener
-     */
-    public void setActionListener(ActionListener al) {
-        addActionListener(al);
     }
 
     /**
