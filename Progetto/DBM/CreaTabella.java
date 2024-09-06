@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import Progetto.Barre.BtnIcon;
+import Progetto.Barre.BtnText;
 import Progetto.Main.Global;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
 import Progetto.Main.Strumenti.RadioButton;
@@ -70,8 +71,9 @@ public class CreaTabella extends JPanel implements ActionListener{
      * - Dimensione dei Label Normali, quindi quelli dedicati ad indicare la sezione all'interno del Panel
      * - Dimensione del TextArea utile per l'inserimento del nome della colonna
      * - Dimesnione della BarraDiSeparazione che separa il titolo con il sottopanel
+     * - Dimensione del Panel che conterrà il BtnText che creerà la tabella
     */
-    private Dimension dim_generale, dim_pannelli, dim_sottopannelli, dim_labelGrande, dim_labelNormale, dim_taNomeColonna;
+    private Dimension dim_generale, dim_pannelli, dim_sottopannelli, dim_labelGrande, dim_labelNormale, dim_taNomeColonna, dim_creaColonna;
 
 
     //********************************** VARIABILI CREA_COLONNA **********************************//
@@ -129,7 +131,7 @@ public class CreaTabella extends JPanel implements ActionListener{
      * - Pulsante con lo scopo di resettare tutte le informazioni che abbiamo inserito sulla colonna corrente
      *   senza però crearla
      */
-    private BtnIcon btn_creaColonna, btn_resetColonna, btn_creaTabella;
+    private BtnIcon btn_creaColonna, btn_resetColonna;
 
     /**
      * Barra che separa il titolo (lbl_creaColonna) con il Panel (pnl_creaColonneInformazioni)
@@ -179,6 +181,19 @@ public class CreaTabella extends JPanel implements ActionListener{
      * Barra che separa il titolo (lbl_colonne) con il Panel (pnl_mostraColonne)
      */
     private BarraDiSeparazione bds_colonne;
+
+    //********************************* VARIABILI CREA_TABELLA *********************************//
+
+    /**
+     * Questo Panel conterrà il BtnText che permetterà di creare la tabella. Il suo utilizzo serve a posizionare il pulsante
+     * a destra nel PopUp
+     */
+    private JPanel pnl_creaTabella;
+
+    /**
+     * Istanza della classe BtnText (Progetto.Barre.BtnText) che, appunto, creerà la tabella
+     */
+    private BtnText btn_creaTabella;
     
     public CreaTabella() {
         dim_generale = new Dimension(GENERAL_WIDTH, GENERAL_HEIGHT);
@@ -187,6 +202,7 @@ public class CreaTabella extends JPanel implements ActionListener{
         dim_labelGrande = new Dimension(LABEL_WIDTH, LABEL_HEIGHT);
         dim_labelNormale = new Dimension(LABEL_WIDTH, (int)(LABEL_HEIGHT * 0.6));
         dim_taNomeColonna = new Dimension((int)(LABEL_WIDTH * 0.6), LABEL_HEIGHT);
+        dim_creaColonna = new Dimension((int)(GENERAL_WIDTH * 0.93), (int)(GENERAL_HEIGHT * 0.1));
 
         bg_tipologia = new ButtonGroup();
         radioButtons = new RadioButton[radioButtonNames.length];
@@ -208,6 +224,13 @@ public class CreaTabella extends JPanel implements ActionListener{
         setUpCreazioneColonne();
 
         add(pnl_creaColonna);
+
+        /**
+         * Creazione del Panel dedicato alla creazione della tabella
+         */
+        setUpCreaTabella();
+
+        add(pnl_creaTabella);
 
         setVisible(false);
 
@@ -313,6 +336,18 @@ public class CreaTabella extends JPanel implements ActionListener{
         pnl_creaColonna.add(bds_creaColonne);
         pnl_creaColonna.add(Box.createVerticalStrut(30));
         pnl_creaColonna.add(pnl_creaColonnaInformazioni);
+    }
+
+    private void setUpCreaTabella() {
+
+        pnl_creaTabella = new JPanel(Global.FL_R_10_10);
+        pnl_creaTabella.setPreferredSize(dim_creaColonna);
+        pnl_creaTabella.setBackground(Color.RED);
+
+        btn_creaTabella = new BtnText(BtnText.CREA_TABELLA, this, "CREA TABELLA", Color.WHITE, Color.BLACK);
+        btn_creaTabella.setPreferredSize(dim_labelNormale);
+
+        pnl_creaTabella.add(btn_creaTabella);
     }
 
     @Override

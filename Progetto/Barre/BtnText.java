@@ -1,9 +1,11 @@
 package Progetto.Barre;
 
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.Box;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 
 import Progetto.Main.Global;
@@ -12,9 +14,9 @@ import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Interface.Hover;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
 
-public class BtnText extends JLabel implements Hover, Animated, Clickable{
+public class BtnText extends JPanel implements Hover, Animated, Clickable{
 
-    public static final int MOSTRA_INFO_TABELLA = 0, MOSTRA_FOREIGN_KEYS = 1, MOSTRA_TRIGGERS = 2, MOSTRA_TABELLA = 3;
+    public static final int MOSTRA_INFO_TABELLA = 0, MOSTRA_FOREIGN_KEYS = 1, MOSTRA_TRIGGERS = 2, MOSTRA_TABELLA = 3, CREA_TABELLA = 4;
 
     private boolean hoverActive, animationActive;
     private SecondaBarra sb;
@@ -24,6 +26,8 @@ public class BtnText extends JLabel implements Hover, Animated, Clickable{
     private int lunghezzaTesto, tipologia;
     private double wBds;
     private PanelTabella pt;
+
+    private Component parent;
 
     public BtnText(String text, SecondaBarra sb, String categoria) {
         
@@ -62,6 +66,18 @@ public class BtnText extends JLabel implements Hover, Animated, Clickable{
 
         setPreferredSize(new Dimension((int)pt.getPreferredSize().getWidth() - 5, 25));
         setUp(Color.BLACK);
+    }
+
+    public BtnText(int tipologia, Component parent, String text, Color background, Color foreground) {
+        
+        this.tipologia = tipologia;
+        this.text = text;
+        this.parent = parent;
+        this.lbl_nome = new JLabel(text);
+
+        setBackground(background);
+
+        setUp(foreground);
     }
 
     private void setUp(Color lblForeground) {
