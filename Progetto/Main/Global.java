@@ -3,6 +3,8 @@ package Progetto.Main;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Image;
+import java.awt.font.FontRenderContext;
+import java.awt.geom.AffineTransform;
 import java.awt.Font;
 import java.io.File;
 
@@ -103,4 +105,12 @@ public class Global {
 
         return new ImageIcon(im.getScaledInstance(w, w, Image.SCALE_SMOOTH));
     }
+
+    public static int getTextWidth(String text, Font font) {
+        
+        AffineTransform afr = new AffineTransform();
+        FontRenderContext frc = new FontRenderContext(afr, true, true);        
+
+        return (int)font.getStringBounds(text, frc).getWidth();
+    } 
 }

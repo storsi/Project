@@ -72,11 +72,17 @@ public class CreaTabella extends JPanel implements ActionListener{
      * - Dimensione del TextArea utile per l'inserimento del nome della colonna
      * - Dimesnione della BarraDiSeparazione che separa il titolo con il sottopanel
      * - Dimensione del Panel che conterrà il BtnText che creerà la tabella
+     * - Dimensione del Panel che conterrà i RadioButtons per la scelta delle caratteristiche
     */
-    private Dimension dim_generale, dim_pannelli, dim_sottopannelli, dim_labelGrande, dim_labelNormale, dim_taNomeColonna, dim_creaColonna;
+    private Dimension 
+    dim_generale, dim_pannelli, dim_sottopannelli, dim_labelGrande, dim_labelNormale, dim_taNomeColonna, 
+    dim_creaColonna, dim_BtnCaratteristiche;
 
 
     //********************************** VARIABILI CREA_COLONNA **********************************//
+    
+    private final int ICON_SIZE = 35;
+    
     /**
      * Rispettivamente:
      * - Label che servirà come titolo per il sottopanel dedicato alla creazione delle colonne. Conterrà
@@ -94,9 +100,11 @@ public class CreaTabella extends JPanel implements ActionListener{
      * Rispettivamente:
      * - Il sottopanel che si occuperà di creare le colonne. Al suo interno conterrà la label lbl_creaColonna
      *   ed un ulteriore panel che conterrà i RadioButtons per scegliere le caratteristiche della colonna
-     * - L'ulteriore sottopanel che contiene i RadioButtons per scegliere le caratteristiche della colonna
+     * - L'ulteriore sottopanel che contiene i RadioButtons per scegliere le caratteristiche e la tipologua
+     *   della colonna
+     * - Panel che conterrà i RadioButtons che permetteranno di scegliere le caratteristiche della cooonne
      */
-    private JPanel pnl_creaColonna, pnl_creaColonnaInformazioni;
+    private JPanel pnl_creaColonna, pnl_creaColonnaInformazioni, pnl_BtnCaratteristiche;
 
     /**
      * Istanza della classe TextArea (Progetto.Main.Strumenti.TextArea) che servorà per l'inserimento del 
@@ -203,6 +211,7 @@ public class CreaTabella extends JPanel implements ActionListener{
         dim_labelNormale = new Dimension(LABEL_WIDTH, (int)(LABEL_HEIGHT * 0.6));
         dim_taNomeColonna = new Dimension((int)(LABEL_WIDTH * 0.6), LABEL_HEIGHT);
         dim_creaColonna = new Dimension((int)(GENERAL_WIDTH * 0.93), (int)(GENERAL_HEIGHT * 0.1));
+        dim_BtnCaratteristiche = new Dimension(PANEL_WIDTH, (int)(PANEL_HEIGHT * 0.178));
 
         bg_tipologia = new ButtonGroup();
         radioButtons = new RadioButton[radioButtonNames.length];
@@ -302,6 +311,10 @@ public class CreaTabella extends JPanel implements ActionListener{
         lbl_caratteristiche.setForeground(FOREGROUND_COLOR);
         lbl_caratteristiche.setFont(Global.FONT_MEDIO);
 
+        pnl_BtnCaratteristiche = new JPanel(Global.FL_C_0_0);
+        pnl_BtnCaratteristiche.setPreferredSize(dim_BtnCaratteristiche);
+        pnl_BtnCaratteristiche.setBackground(BACKGROUND_COLOR);
+
         /*
          * Creazione del secondo gruppo di RadioButton destinati alla sezione Caratteristica
          * (sono radioButtonNames.length - 4)
@@ -312,22 +325,32 @@ public class CreaTabella extends JPanel implements ActionListener{
             else radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], false, this);
         }
 
+        btn_creaColonna = new BtnIcon(BtnIcon.CREA_COLONNA, this, ICON_SIZE);
+        btn_resetColonna = new BtnIcon(BtnIcon.RESET_COLONNA, this, ICON_SIZE);
+
         /**
          * Aggiungiamo tutti gli elementi del Panel pnl_creaColonnaInformazioni
          */
         pnl_creaColonnaInformazioni.add(lbl_nomeColonna);
         pnl_creaColonnaInformazioni.add(ta_nomeColonna);
+        pnl_creaColonnaInformazioni.add(Box.createVerticalStrut(40));
         pnl_creaColonnaInformazioni.add(lbl_tipologia);
         
         //Aggiungiamo i primi 4 RadioButtons con un ciclo for
         for(int i = 0; i < 4; i++) pnl_creaColonnaInformazioni.add(radioButtons[i]);
         
+        pnl_creaColonnaInformazioni.add(Box.createVerticalStrut(40));
         pnl_creaColonnaInformazioni.add(lbl_caratteristiche);
         
         
         
+        
         //Aggiungiamo gli ultimi RadioButtons con un ciclo for
-        for(int i = 4; i < radioButtons.length; i++) pnl_creaColonnaInformazioni.add(radioButtons[i]);
+        for(int i = 4; i < radioButtons.length; i++) pnl_BtnCaratteristiche.add(radioButtons[i]);
+
+        pnl_creaColonnaInformazioni.add(pnl_BtnCaratteristiche);
+        pnl_creaColonnaInformazioni.add(btn_creaColonna);
+        pnl_creaColonnaInformazioni.add(btn_resetColonna);
 
         /**
          * Aggiungiamo tutti gli elementi nel Panel pnl_creaColonna
@@ -336,18 +359,23 @@ public class CreaTabella extends JPanel implements ActionListener{
         pnl_creaColonna.add(bds_creaColonne);
         pnl_creaColonna.add(Box.createVerticalStrut(30));
         pnl_creaColonna.add(pnl_creaColonnaInformazioni);
+
+        checkRadioButtonsTipologia();
     }
 
     private void setUpCreaTabella() {
 
         pnl_creaTabella = new JPanel(Global.FL_R_10_10);
         pnl_creaTabella.setPreferredSize(dim_creaColonna);
-        pnl_creaTabella.setBackground(Color.RED);
+        pnl_creaTabella.setBackground(BACKGROUND_COLOR);
 
-        btn_creaTabella = new BtnText(BtnText.CREA_TABELLA, this, "CREA TABELLA", Color.WHITE, Color.BLACK);
-        btn_creaTabella.setPreferredSize(dim_labelNormale);
+        btn_creaTabella = new BtnText(BtnText.CREA_TABELLA, this, "CREA TABELLA");
 
         pnl_creaTabella.add(btn_creaTabella);
+    }
+
+    public void creaTabella() {
+        //TODO popolare la funzione per la creazione della tabella
     }
 
     @Override

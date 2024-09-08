@@ -1,7 +1,5 @@
 package Progetto.Main.Interface;
 
-import java.awt.event.MouseEvent;
-
 public interface Animated extends MouseInterface{
 
     default void setAnimationThread() {

@@ -6,30 +6,25 @@ import java.awt.Component;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
-import javax.swing.JLayeredPane;
-import javax.swing.SwingUtilities;
 
-import java.awt.MouseInfo;
-import java.awt.Point;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-
+import Progetto.DBM.CreaTabella;
 import Progetto.Main.Global;
 import Progetto.Main.Panel;
 import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Interface.Hover;
 import Progetto.Main.Strumenti.Informazione;
-import Progetto.Main.Strumenti.Label;
 
 public class BtnIcon extends JLabel implements Clickable, Hover{
 
     public static final int AGGIUNGI_TABELLA = 0, MOSTRA_SCHEMA = 1, ELIMINA = 2, AGGIUNGI = 3, CONFERMA = 4;
     public static final int ANNULLA = 5, PROSEGUI = 6, RIDUCI_BARRA = 7, ALLARGA_BARRA = 8, ELIMINA_NERO = 9;
+    public static final int CREA_COLONNA = 10, RESET_COLONNA = 11;
 
     public static final String[] NOMI_PRIMA_BARRA = {"Database"};
-    public static final String[] NOMI_TERZA_BARRA = {"Aggiungi Tabella", "Mostra Schema", "Elimina", "Aggiungi",
-                                                    "Conferma", "Annulla", "Prosegui", "Riduci", "Allarga", "EliminaNero"};
+    public static final String[] NOMI_TERZA_BARRA = {
+        "Aggiungi Tabella", "Mostra Schema", "Elimina", "Aggiungi", "Conferma", "Annulla", "Prosegui", 
+        "Riduci", "Allarga", "Elimina Tabella", "Crea Colonna", "Reset Informazioni"
+        };
 
     private String messaggio, categoria;
     private int tipologia, iconSize, profonditaMax;
@@ -42,26 +37,28 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
     private Component parent;
     private Panel panel;
     private Informazione info;
+    private CreaTabella ct;
 
-    public BtnIcon(int tipologia, Barra barra) {
+    
+    public BtnIcon(int tipologia, Object obj) {
 
-        this.barra = barra;
+        if(obj instanceof Barra) barra = (Barra)obj;
+        else if(obj instanceof PanelTabella) pt = (PanelTabella)obj;
+        else if(obj instanceof PopUp) avviso = (PopUp)obj;
+        else if(obj instanceof CreaTabella) ct = (CreaTabella)obj;
+
         iconSize = Global.ICON_SIZE;
         String[] nomi = (barra instanceof PrimaBarra) ? NOMI_PRIMA_BARRA : NOMI_TERZA_BARRA;
         setUpIcon(tipologia, nomi);
     }
 
-    public BtnIcon(int tipologia, PanelTabella pt) {
+    public BtnIcon(int tipologia, Object obj, int iconSize) {
 
-        this.pt = pt;
-        iconSize = Global.ICON_SIZE;
-        String[] nomi = (barra instanceof PrimaBarra) ? NOMI_PRIMA_BARRA : NOMI_TERZA_BARRA;
-        setUpIcon(tipologia, nomi);
-    }
+        if(obj instanceof Barra) barra = (Barra)obj;
+        else if(obj instanceof PanelTabella) pt = (PanelTabella)obj;
+        else if(obj instanceof PopUp) avviso = (PopUp)obj;
+        else if(obj instanceof CreaTabella) ct = (CreaTabella)obj;
 
-    public BtnIcon(int tipologia, Barra barra, int iconSize) {
-
-        this.barra = barra;
         this.iconSize = iconSize;
         String[] nomi = (barra instanceof PrimaBarra) ? NOMI_PRIMA_BARRA : NOMI_TERZA_BARRA;
         setUpIcon(tipologia, nomi);
@@ -71,6 +68,7 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
 
         this.sb = sb;
         this.categoria = categoria;
+        
         if(tipologia == AGGIUNGI) {
             iconSize = getFont().getSize();
             setUpIcon(tipologia, NOMI_TERZA_BARRA);
@@ -80,28 +78,8 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
         }
     }
 
-    public BtnIcon(int tipologia, PopUp avviso) {
-
-        this.avviso = avviso;
-        iconSize = Global.ICON_SIZE;
-        setUpIcon(tipologia, NOMI_TERZA_BARRA);
-    }
-
-    public BtnIcon(String text, SecondaBarra sb, String categoria) {
-        
-        this.tipologia = -1;
-        this.sb = sb;
-        this.messaggio = text;
-        this.categoria = categoria;
-
-        setForeground(Color.WHITE);
-        addMouseListener(this);
-        setFont(Global.FONT_MEDIO);
-        setText("\u2022 " + text.toUpperCase());
-        setPreferredSize(new Dimension((int)sb.getPreferredSize().getWidth() - 5, 20));
-    }
-
     private void setUpIcon(int tipologia, String[] arrayIcone) {
+        
         this.tipologia = tipologia;
         this.messaggio = arrayIcone[tipologia];
         this.icon = Global.getIcon(arrayIcone[tipologia].replace(' ', '_') + ".png", iconSize);

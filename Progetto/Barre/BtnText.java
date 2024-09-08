@@ -2,12 +2,17 @@ package Progetto.Barre;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingConstants;
 import javax.swing.Box;
 
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 
+import Progetto.DBM.CreaTabella;
 import Progetto.Main.Global;
 import Progetto.Main.Interface.Animated;
 import Progetto.Main.Interface.Clickable;
@@ -18,7 +23,7 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
 
     public static final int MOSTRA_INFO_TABELLA = 0, MOSTRA_FOREIGN_KEYS = 1, MOSTRA_TRIGGERS = 2, MOSTRA_TABELLA = 3, CREA_TABELLA = 4;
 
-    private boolean hoverActive, animationActive;
+    private boolean hoverActive, animationActive, pulsanteConSfondo, animazioneInPausa;
     private SecondaBarra sb;
     private String text, categoria;
     private JLabel lbl_nome;
@@ -27,7 +32,28 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
     private double wBds;
     private PanelTabella pt;
 
-    private Component parent;
+    private CreaTabella creaTabella;
+
+    /**
+     * Rispettivamente:
+     * - Colore iniziale del background del pulsante utile per la creazione della tabella (prima dell'animazione)
+     * - Colore del testo contenente nel pulsante utile per la creazione della tabella
+     * - Colore finale del background del pulsante utile per la creazione della tabella (dopo l'animazione)
+     */
+    private Color coloreFinale = new Color(128,112,137);
+    private Color coloreIniziale = Color.WHITE;
+    private Color coloreForeground = Color.BLACK;
+
+    /**
+     * Variabili per la gestione dell'animazione pr i BtnText con la variabile pulsanteConSfondo = true
+     */
+    private float red, blue, green;
+
+    /**
+     * Variabili usata per modificare il colore durante l'animazione dei BtnText con la variabile
+     * pulsanteConSfondo = true
+     */
+    private final double RATIO_CAMBIO_COLORE = 0.000005;
 
     public BtnText(String text, SecondaBarra sb, String categoria) {
         
@@ -38,12 +64,12 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
         this.hoverActive = false;
         this.animationActive = false;
         this.wBds = 0;
+        this.pulsanteConSfondo = this.animazioneInPausa = false;
 
         lbl_nome = new JLabel("\u2022 " + text.toUpperCase());
         lbl_nome.setBackground(sb.getBackground());
 
         setOpaque(false);
-        setBackground(Color.RED);
         
         setPreferredSize(new Dimension((int)sb.getPreferredSize().getWidth() - 5, 25));
         setUp(Color.WHITE);
@@ -57,51 +83,69 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
         this.hoverActive = false;
         this.animationActive = false;
         this.wBds = 0;
+        this.pulsanteConSfondo = this.animazioneInPausa = false;
 
         lbl_nome = new JLabel("\u2022 " + text.toUpperCase());
         lbl_nome.setBackground(pt.getBackground());
 
         setOpaque(false);
-        setBackground(Color.RED);
 
         setPreferredSize(new Dimension((int)pt.getPreferredSize().getWidth() - 5, 25));
         setUp(Color.BLACK);
     }
 
-    public BtnText(int tipologia, Component parent, String text, Color background, Color foreground) {
+    public BtnText(int tipologia, Object parent, String text) {
         
         this.tipologia = tipologia;
         this.text = text;
-        this.parent = parent;
-        this.lbl_nome = new JLabel(text);
+        
+        this.pulsanteConSfondo = true;
+        this.animazioneInPausa = false;
+        
+        this.red = coloreIniziale.getRed();
+        this.green = coloreIniziale.getGreen();
+        this.blue = coloreIniziale.getBlue();
+        
+        lbl_nome = new JLabel(text);
 
-        setBackground(background);
+        if(parent instanceof CreaTabella) creaTabella = (CreaTabella)parent;
+        
+        
+        addMouseListener(this);
+        setOpaque(false);
+        setBackground(coloreIniziale);
 
-        setUp(foreground);
+        setUp(coloreForeground);
     }
 
     private void setUp(Color lblForeground) {
-        
 
         setLayout(Global.FL_L_0_0);
         setAnimationThread();
-
         
         lbl_nome.setForeground(lblForeground);
+        lbl_nome.setOpaque(false);
         lbl_nome.setFont(Global.FONT_MEDIO);
-        lbl_nome.setPreferredSize(new Dimension((int)getPreferredSize().getWidth(), 20));
-        lbl_nome.addMouseListener(this);
-        lbl_nome.setOpaque(true);
 
-        this.lunghezzaTesto = text.length() * getFont().getSize();
-        
+        if(!pulsanteConSfondo) {
+            lbl_nome.setPreferredSize(new Dimension((int)getPreferredSize().getWidth(), 20));
+            lbl_nome.addMouseListener(this);
 
-        bds = new BarraDiSeparazione((int)wBds, lbl_nome.getForeground());
-        bds.setVisible(true);
+            this.lunghezzaTesto = text.length() * getFont().getSize();
 
-        add(lbl_nome);
-        add(Box.createHorizontalStrut(14));
-        add(bds);
+            bds = new BarraDiSeparazione((int)wBds, lbl_nome.getForeground());
+            bds.setVisible(true);
+
+            add(lbl_nome);
+            add(Box.createHorizontalStrut(14));
+            add(bds);
+        } else {
+            
+            lbl_nome.setPreferredSize(new Dimension(200, 37));
+            lbl_nome.setHorizontalAlignment(SwingConstants.CENTER);
+
+            add(lbl_nome);
+        }
     }
 
     public String getCategoria() {
@@ -136,7 +180,9 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
 
     @Override
     public void outHover() {
+        animationActive = true;
         hoverActive = false;
+        attivaThread();
     }
 
     @Override
@@ -149,15 +195,52 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
 
         if(hoverActive) {
 
-            if(wBds < lunghezzaTesto) {
+            if(pulsanteConSfondo) {
+                
+                red += (coloreFinale.getRed() - coloreIniziale.getRed()) * RATIO_CAMBIO_COLORE;
+                green += (coloreFinale.getGreen() - coloreIniziale.getGreen()) * RATIO_CAMBIO_COLORE;
+                blue += (coloreFinale.getBlue() - coloreIniziale.getBlue()) * RATIO_CAMBIO_COLORE;
+                
+
+                setBackground(new Color((int)Math.round(red), (int)Math.round(green), (int)Math.round(blue)));                  
+                revalidate();
+                repaint();
+
+                if((int)Math.round(red) == coloreFinale.getRed()) animationActive = false;
+
+            } else {
+                
                 wBds += 0.0001;
                 bds.setWidth((int)wBds);
-            }
-        } else {
-            wBds -= 0.0001;
-            bds.setWidth((int)wBds);
 
-            if(wBds <= 0) animationActive = false;
+                if(wBds >= lunghezzaTesto) animationActive = false;
+            }
+            
+        } else {
+
+            if(pulsanteConSfondo) {
+
+                if(red != coloreFinale.getRed()) {
+                    
+                    red -= (coloreFinale.getRed() - coloreIniziale.getRed()) * RATIO_CAMBIO_COLORE;
+                    green -= (coloreFinale.getGreen() - coloreIniziale.getGreen()) * RATIO_CAMBIO_COLORE;
+                    blue -= (coloreFinale.getBlue() - coloreIniziale.getBlue()) * RATIO_CAMBIO_COLORE;
+
+                    setBackground(new Color((int)Math.round(red), (int)Math.round(green), (int)Math.round(blue)));
+                    revalidate();
+                    repaint();
+                }
+
+                if((int)Math.round(red) == coloreIniziale.getRed()) animationActive = false;
+
+            } else {
+                
+                wBds -= 0.0001;
+                bds.setWidth((int)wBds);
+                
+                if(wBds <= 0) animationActive = false;
+            }
+
         }
     }
 
@@ -167,17 +250,38 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
         switch (tipologia) {
             case -1: sb.aggiornaTerzaBarra(this);
             break;
-            case 0: pt.mostraInfo();
+            case MOSTRA_INFO_TABELLA: pt.mostraInfo();
             break;
-            case 1: pt.mostraFK();
+            case MOSTRA_FOREIGN_KEYS: pt.mostraFK();
             break;
-            case 2: pt.mostraTriggers();
+            case MOSTRA_TRIGGERS: pt.mostraTriggers();
             break;
-            case 3: pt.mostraTabella();
+            case MOSTRA_TABELLA: pt.mostraTabella();
+            break;
+            case CREA_TABELLA: creaTabella.creaTabella();
             break;
             default:
             break;
         }
+        
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+
+        if(pulsanteConSfondo) {
+            
+            Graphics2D g2d = (Graphics2D) g;
+            int raggioCurvatura = 40;
+
+            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+            g2d.setColor(getBackground());
+            g2d.fillRoundRect(0, 0, (int)getPreferredSize().getWidth(), (int)getPreferredSize().getHeight(), raggioCurvatura, raggioCurvatura);
+        
+        }
+
         
     }
 
