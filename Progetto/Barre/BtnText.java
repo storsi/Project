@@ -21,14 +21,25 @@ import Progetto.Main.Strumenti.BarraDiSeparazione;
 
 public class BtnText extends JPanel implements Hover, Animated, Clickable{
 
-    public static final int MOSTRA_INFO_TABELLA = 0, MOSTRA_FOREIGN_KEYS = 1, MOSTRA_TRIGGERS = 2, MOSTRA_TABELLA = 3, CREA_TABELLA = 4;
+    public enum Tipologia {
+        
+        SCELTA_FILE,
+        MOSTRA_INFO_TABELLA,
+        MOSTRA_FOREIGN_KEYS,
+        MOSTRA_TRIGGERS,
+        MOSTRA_TABELLA,
+        CREA_TABELLA,
+        CREA_COLONNA,
+        RESET_COLONNA
+    }
 
     private boolean hoverActive, animationActive, pulsanteConSfondo, animazioneInPausa;
     private SecondaBarra sb;
     private String text, categoria;
     private JLabel lbl_nome;
     private BarraDiSeparazione bds;
-    private int lunghezzaTesto, tipologia;
+    private int lunghezzaTesto;
+    private Tipologia tipologia;
     private double wBds;
     private PanelTabella pt;
 
@@ -57,7 +68,7 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
 
     public BtnText(String text, SecondaBarra sb, String categoria) {
         
-        this.tipologia = -1;
+        this.tipologia = Tipologia.SCELTA_FILE;
         this.sb = sb;
         this.text = text;
         this.categoria = categoria;
@@ -75,7 +86,7 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
         setUp(Color.WHITE);
     }
 
-    public BtnText(String text, PanelTabella pt, int tipologia) {
+    public BtnText(String text, PanelTabella pt, Tipologia tipologia) {
 
         this.tipologia = tipologia;
         this.pt = pt;
@@ -94,7 +105,7 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
         setUp(Color.BLACK);
     }
 
-    public BtnText(int tipologia, Object parent, String text) {
+    public BtnText(Tipologia tipologia, Object parent, String text) {
         
         this.tipologia = tipologia;
         this.text = text;
@@ -248,7 +259,7 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
     public void afterClick() {
         
         switch (tipologia) {
-            case -1: sb.aggiornaTerzaBarra(this);
+            case SCELTA_FILE: sb.aggiornaTerzaBarra(this);
             break;
             case MOSTRA_INFO_TABELLA: pt.mostraInfo();
             break;

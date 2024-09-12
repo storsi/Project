@@ -10,6 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import Progetto.Barre.BtnText.Tipologia;
 import Progetto.Comunicazione.Comunicatore;
 import Progetto.Main.Global;
 import Progetto.Main.Interface.Clickable;
@@ -104,10 +105,10 @@ public class PanelTabella extends JPanel implements Clickable{
 
         pnl_parteAlta.add(lbl_nome);
         pnl_parteAlta.add(bdsAlta);
-        pnl_generale.add(new BtnText("Mostra Tabella", this, BtnText.MOSTRA_TABELLA));
-        pnl_generale.add(new BtnText("Informazioni", this, BtnText.MOSTRA_INFO_TABELLA));
-        pnl_generale.add(new BtnText("Foreign Keys", this, BtnText.MOSTRA_FOREIGN_KEYS));
-        pnl_generale.add(new BtnText("Triggers", this, BtnText.MOSTRA_TRIGGERS));
+        pnl_generale.add(new BtnText("Mostra Tabella", this, Tipologia.MOSTRA_TABELLA));
+        pnl_generale.add(new BtnText("Informazioni", this, Tipologia.MOSTRA_INFO_TABELLA));
+        pnl_generale.add(new BtnText("Foreign Keys", this, Tipologia.MOSTRA_FOREIGN_KEYS));
+        pnl_generale.add(new BtnText("Triggers", this, Tipologia.MOSTRA_TRIGGERS));
         pnl_parteBassa.add(bdsBassa);
         pnl_parteBassa.add(new BtnIcon(BtnIcon.ELIMINA_NERO, this));
 
