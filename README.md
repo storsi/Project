@@ -1,10 +1,7 @@
 # Project
 
-### TODO LIST:
+###ABOUT THIS:
 
-- [X] Creare l'interfaccia per l'animazione
-- [X] Aggiungere animazione sull'hover del testo
-- [ ] Sistemare gli FPS sulle animazioni
-- [ ] Rifare il sistema che mostra il nome dell'icona sull'hover
-- [ ] Aggiungere la possibilità di creare un mongoDB
-- [ ] Organizzare la gestione dei database inserendo "dataUltimaModifica", "commento",... nel db databases
+This is just a project where i aim to create my own sqlite manager with UI using java. 
+
+ATTENTION: still "under construction"!
