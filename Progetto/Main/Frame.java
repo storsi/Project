@@ -12,7 +12,7 @@ public class Frame extends JFrame{
         //setResizable(false);    
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        add(new Panel());
+        add(new MainPanel());
 
         pack();
 

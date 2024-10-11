@@ -54,6 +54,7 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
     private Color coloreFinale = new Color(128,112,137);
     private Color coloreIniziale = Color.WHITE;
     private Color coloreForeground = Color.BLACK;
+    private Color coloreDisabilitato = Color.GRAY;
 
     /**
      * Variabili per la gestione dell'animazione pr i BtnText con la variabile pulsanteConSfondo = true
@@ -159,6 +160,27 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
         }
     }
 
+    /**
+     * Disabilita il pulsante, con eventuali opzioni aggiuntive (come cambio di colore o richiamo 
+     * di ulteriori funzioni)
+     */
+    public void disableButton() {
+        
+        setEnabled(false);
+        setBackground(coloreDisabilitato);
+
+    }
+
+    /**
+     * Abilita il pulsante e ripristina le sue caratteristiche (come il colore)
+     */
+    public void ableButton() {
+
+        setEnabled(true);
+        setBackground(coloreIniziale);
+
+    }
+
     public String getCategoria() {
         return categoria;
     }
@@ -204,55 +226,56 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
     @Override
     public void anima() {
 
-        if(hoverActive) {
+        if(isEnabled())
+            if(hoverActive) {
 
-            if(pulsanteConSfondo) {
-                
-                red += (coloreFinale.getRed() - coloreIniziale.getRed()) * RATIO_CAMBIO_COLORE;
-                green += (coloreFinale.getGreen() - coloreIniziale.getGreen()) * RATIO_CAMBIO_COLORE;
-                blue += (coloreFinale.getBlue() - coloreIniziale.getBlue()) * RATIO_CAMBIO_COLORE;
-                
-
-                setBackground(new Color((int)Math.round(red), (int)Math.round(green), (int)Math.round(blue)));                  
-                revalidate();
-                repaint();
-
-                if((int)Math.round(red) == coloreFinale.getRed()) animationActive = false;
-
-            } else {
-                
-                wBds += 0.0001;
-                bds.setWidth((int)wBds);
-
-                if(wBds >= lunghezzaTesto) animationActive = false;
-            }
-            
-        } else {
-
-            if(pulsanteConSfondo) {
-
-                if(red != coloreFinale.getRed()) {
+                if(pulsanteConSfondo) {
                     
-                    red -= (coloreFinale.getRed() - coloreIniziale.getRed()) * RATIO_CAMBIO_COLORE;
-                    green -= (coloreFinale.getGreen() - coloreIniziale.getGreen()) * RATIO_CAMBIO_COLORE;
-                    blue -= (coloreFinale.getBlue() - coloreIniziale.getBlue()) * RATIO_CAMBIO_COLORE;
+                    red += (coloreFinale.getRed() - coloreIniziale.getRed()) * RATIO_CAMBIO_COLORE;
+                    green += (coloreFinale.getGreen() - coloreIniziale.getGreen()) * RATIO_CAMBIO_COLORE;
+                    blue += (coloreFinale.getBlue() - coloreIniziale.getBlue()) * RATIO_CAMBIO_COLORE;
+                    
 
-                    setBackground(new Color((int)Math.round(red), (int)Math.round(green), (int)Math.round(blue)));
+                    setBackground(new Color((int)Math.round(red), (int)Math.round(green), (int)Math.round(blue)));                  
                     revalidate();
                     repaint();
+
+                    if((int)Math.round(red) == coloreFinale.getRed()) animationActive = false;
+
+                } else {
+                    
+                    wBds += 0.0001;
+                    bds.setWidth((int)wBds);
+
+                    if(wBds >= lunghezzaTesto) animationActive = false;
+                }
+                
+            } else {
+
+                if(pulsanteConSfondo) {
+
+                    if(red != coloreFinale.getRed()) {
+                        
+                        red -= (coloreFinale.getRed() - coloreIniziale.getRed()) * RATIO_CAMBIO_COLORE;
+                        green -= (coloreFinale.getGreen() - coloreIniziale.getGreen()) * RATIO_CAMBIO_COLORE;
+                        blue -= (coloreFinale.getBlue() - coloreIniziale.getBlue()) * RATIO_CAMBIO_COLORE;
+
+                        setBackground(new Color((int)Math.round(red), (int)Math.round(green), (int)Math.round(blue)));
+                        revalidate();
+                        repaint();
+                    }
+
+                    if((int)Math.round(red) == coloreIniziale.getRed()) animationActive = false;
+
+                } else {
+                    
+                    wBds -= 0.0001;
+                    bds.setWidth((int)wBds);
+                    
+                    if(wBds <= 0) animationActive = false;
                 }
 
-                if((int)Math.round(red) == coloreIniziale.getRed()) animationActive = false;
-
-            } else {
-                
-                wBds -= 0.0001;
-                bds.setWidth((int)wBds);
-                
-                if(wBds <= 0) animationActive = false;
             }
-
-        }
     }
 
     @Override
@@ -270,6 +293,12 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
             case MOSTRA_TABELLA: pt.mostraTabella();
             break;
             case CREA_TABELLA: creaTabella.creaTabella();
+            break;
+            case RESET_COLONNA: 
+
+                creaTabella.reset();
+                disableButton();
+
             break;
             default:
             break;

@@ -9,7 +9,7 @@ import javax.swing.JLabel;
 
 import Progetto.DBM.CreaTabella;
 import Progetto.Main.Global;
-import Progetto.Main.Panel;
+import Progetto.Main.MainPanel;
 import Progetto.Main.Interface.Clickable;
 import Progetto.Main.Interface.Hover;
 import Progetto.Main.Strumenti.Informazione;
@@ -35,7 +35,7 @@ public class BtnIcon extends JLabel implements Clickable, Hover{
     private Barra barra;
     private boolean infoActive, hoverAttivo, hoverable;
     private Component parent;
-    private Panel panel;
+    private MainPanel panel;
     private Informazione info;
     private CreaTabella ct;
 

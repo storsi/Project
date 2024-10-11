@@ -110,7 +110,7 @@ public class Informazione extends JLabel{
         
         do{
             element = element.getParent();
-        }while(!(element.getClass().getSimpleName().equals("Panel")));
+        }while(!(element.getClass().getSimpleName().equals("MainPanel")));
 
         panel = (JLayeredPane)element;
         
