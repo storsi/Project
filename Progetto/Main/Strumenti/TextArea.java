@@ -44,6 +44,10 @@ public class TextArea extends JTextArea implements KeyListener{
         setPreferredSize(dim);
     }
 
+    public boolean isEmpty() {
+        return getText() == null || getText().equals("");
+    }
+
     public void changeColor(Color background, Color accessories) {
         if(background != null) {
             setOpaque(true);

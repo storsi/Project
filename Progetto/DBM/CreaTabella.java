@@ -75,16 +75,15 @@ public class CreaTabella extends JPanel implements ActionListener{
      * - Dimesnione della BarraDiSeparazione che separa il titolo con il sottopanel
      * - Dimensione del Panel che conterrà il BtnText che creerà la tabella
      * - Dimensione dei Panels che conterranno le informazioni per la creazione della colonnas
-     * - Dimensione del Panel dedicato all'aggiunta di ulteriori informazioni quando si scelgono determinate caratteristiche
     */
     private Dimension 
     dim_generale, dim_pannelli, dim_sottopannelli, dim_label, dim_taNomeColonna, dim_creaTabella,
-    dim_infoColonna, dim_aggiungiDettagli, dim_sp;
+    dim_infoColonna, dim_aggiungiDettagli;
 
 
     //********************************** VARIABILI CREA_COLONNA **********************************//
     
-    private final int ICON_SIZE = 35;
+    private final int ICON_SIZE = 35, SOTTOPANNELLI_HEIGHT = (int)(PANEL_HEIGHT * 0.69);
     
     /**
      * Rispettivamente:
@@ -220,8 +219,7 @@ public class CreaTabella extends JPanel implements ActionListener{
     public CreaTabella() {
         dim_generale = new Dimension(GENERAL_WIDTH, GENERAL_HEIGHT);
         dim_pannelli = new Dimension(PANEL_WIDTH, PANEL_HEIGHT);
-        dim_sottopannelli = new Dimension(PANEL_WIDTH, (int)(PANEL_HEIGHT * 0.69));
-        dim_sp = new Dimension(PANEL_WIDTH, (int)(PANEL_HEIGHT * 0.69));
+        dim_sottopannelli = new Dimension(PANEL_WIDTH, SOTTOPANNELLI_HEIGHT);
         dim_label = new Dimension(LABEL_WIDTH, LABEL_HEIGHT);
         dim_taNomeColonna = new Dimension((int)(LABEL_WIDTH * 0.6), LABEL_HEIGHT);
         dim_creaTabella = new Dimension(PANEL_WIDTH, (int)(PANEL_HEIGHT * 0.2));
@@ -298,7 +296,7 @@ public class CreaTabella extends JPanel implements ActionListener{
          */
 
         //Creazione del ScrollPane
-        sp_creaColonna = new ScrollPane(dim_sp, Color.WHITE);
+        sp_creaColonna = new ScrollPane(dim_sottopannelli.getSize(), Color.WHITE);
         
         //Creazione dei Panels
         pnl_creaColonna = new Panel(Global.FL_C_10_10, dim_pannelli, BACKGROUND_COLOR);
@@ -317,6 +315,8 @@ public class CreaTabella extends JPanel implements ActionListener{
         lbl_caratteristiche = new Label("CARATTERISTICA:", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR);
         lbl_aggiungiDettagli = new Label("AGGIUNGI DETTAGLI", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR);
         lbl_default = new Label("ELEMENTO DI DEFAULT:", Global.FONT_PICCOLO, dim_label, FOREGROUND_COLOR);
+        lbl_check = new Label("ELEMENTO DI CHECK:", Global.FONT_PICCOLO, dim_label, FOREGROUND_COLOR);
+        lbl_collate = new Label("ELEMENTO DI COLLATE:", Global.FONT_PICCOLO, dim_label, FOREGROUND_COLOR);
 
 
         //Creazione delle BarreDiScorrimento
@@ -330,6 +330,12 @@ public class CreaTabella extends JPanel implements ActionListener{
 
         ta_default = new TextArea(Global.FONT_MEDIO, dim_taNomeColonna);
         ta_default.setCharacterLimit(MAX_CHAR_NOME_COLONNA);
+
+        ta_check = new TextArea(Global.FONT_MEDIO, dim_taNomeColonna);
+        ta_check.setCharacterLimit(MAX_CHAR_NOME_COLONNA);
+
+        ta_collate = new TextArea(Global.FONT_MEDIO, dim_taNomeColonna);
+        ta_collate.setCharacterLimit(MAX_CHAR_NOME_COLONNA);
 
 
         //Creazione dei RadioButtons
@@ -359,6 +365,10 @@ public class CreaTabella extends JPanel implements ActionListener{
         pnl_aggiungiDettagli.add(lbl_aggiungiDettagli);
         pnl_aggiungiDettagli.add(lbl_default);
         pnl_aggiungiDettagli.add(ta_default);
+        pnl_aggiungiDettagli.add(lbl_check);
+        pnl_aggiungiDettagli.add(ta_check);
+        pnl_aggiungiDettagli.add(lbl_collate);
+        pnl_aggiungiDettagli.add(ta_collate);
 
         pnl_creaColonnaBtnFinali.add(btn_creaColonna);
         pnl_creaColonnaBtnFinali.add(btn_resetColonna);
@@ -394,16 +404,6 @@ public class CreaTabella extends JPanel implements ActionListener{
         ta_nomeColonna.setText("");
         radioButtons[0].setSelected(true);
 
-        //Settiamo non visibili tutti gli elementi del pnl_aggiungiDettagli, incluso il panel stesso
-
-        pnl_aggiungiDettagli.setVisible(false);
-        lbl_default.setVisible(false);
-        //lbl_check.setVisible(false);
-        //lbl_collate.setVisible(false);
-        ta_default.setVisible(false);
-        //ta_check.setVisible(false);
-        //ta_collate.setVisible(false);
-
         for(int i = 4; i < radioButtons.length; i++) {
             radioButtons[i].setSelected(false);
         }
@@ -421,20 +421,24 @@ public class CreaTabella extends JPanel implements ActionListener{
 
         double changeHeight = 0;
 
-        if(radioButtons[8].isSelected()) changeHeight = dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60;
-        else changeHeight = -(dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60);
-        
-        if(radioButtons[9].isSelected());
-        if(radioButtons[10].isSelected());
+        if(radioButtons[8].isSelected()) changeHeight += dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60;
+        if(radioButtons[9].isSelected()) changeHeight += dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60;
+        if(radioButtons[10].isSelected()) changeHeight += dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60;
 
+        pnl_aggiungiDettagli.setVisible(radioButtons[8].isSelected() || radioButtons[9].isSelected() || radioButtons[10].isSelected());
 
         lbl_default.setVisible(radioButtons[8].isSelected());
         ta_default.setVisible(radioButtons[8].isSelected());
-        pnl_aggiungiDettagli.setVisible(radioButtons[8].isSelected());
+
+        lbl_check.setVisible(radioButtons[9].isSelected());
+        ta_check.setVisible(radioButtons[9].isSelected());
+
+        lbl_collate.setVisible(radioButtons[10].isSelected());
+        ta_collate.setVisible(radioButtons[10].isSelected());
 
 
         dim_aggiungiDettagli.setSize(dim_aggiungiDettagli.getWidth(), changeHeight);
-        dim_sottopannelli.setSize(dim_sottopannelli.getWidth(), dim_sottopannelli.getHeight() + changeHeight);
+        dim_sottopannelli.setSize(dim_sottopannelli.getWidth(), SOTTOPANNELLI_HEIGHT + changeHeight);
     }
 
     @Override
@@ -478,6 +482,7 @@ public class CreaTabella extends JPanel implements ActionListener{
         }
 
         aggiornaRadioButtons();
+        aggiungiDettagli();
     }
 
     private void checkRadioButtonCaratteristica() {
