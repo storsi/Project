@@ -300,7 +300,7 @@ public class BtnText extends JPanel implements Hover, Animated, Clickable{
                 disableButton();
 
             break;
-            default:
+            case CREA_COLONNA: creaTabella.prosegui();
             break;
         }
         

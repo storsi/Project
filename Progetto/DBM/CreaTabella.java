@@ -10,16 +10,16 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.LayoutManager;
 
-import Progetto.Barre.BtnIcon;
 import Progetto.Barre.BtnText;
 import Progetto.Barre.BtnText.Tipologia;
 import Progetto.Main.Global;
 import Progetto.Main.Strumenti.BarraDiSeparazione;
+import Progetto.Main.Strumenti.DropdownMenu;
 import Progetto.Main.Strumenti.Label;
 import Progetto.Main.Strumenti.Panel;
 import Progetto.Main.Strumenti.RadioButton;
-import Progetto.Main.Strumenti.ScrollPane;
 import Progetto.Main.Strumenti.TextArea;
 
 public class CreaTabella extends JPanel implements ActionListener{
@@ -55,12 +55,6 @@ public class CreaTabella extends JPanel implements ActionListener{
     private final Color FOREGROUND_COLOR = Color.WHITE;
 
     /**
-     * Indica il massimo di caratteri che si possono inserire nel TextArea designato a contenere il nome
-     * della colonna 
-     */
-    private final int MAX_CHAR_NOME_COLONNA = 27;
-
-    /**
      * Spessore delle istanze della classe BarraDiSeparazione (Progetto.Main.Strumenti.BarraDiSeparazione)
      */
     private final int BDS_WIDTH = (int)(LABEL_WIDTH * 0.1);
@@ -77,76 +71,24 @@ public class CreaTabella extends JPanel implements ActionListener{
      * - Dimensione dei Panels che conterranno le informazioni per la creazione della colonnas
     */
     private Dimension 
-    dim_generale, dim_pannelli, dim_sottopannelli, dim_label, dim_taNomeColonna, dim_creaTabella,
-    dim_infoColonna, dim_aggiungiDettagli;
+    dim_generale, dim_pannelli, dim_sottopannelli, dim_label, dim_creaTabella;
+
+    private BarraDiSeparazione bds;
 
 
     //********************************** VARIABILI CREA_COLONNA **********************************//
     
-    private final int ICON_SIZE = 35, SOTTOPANNELLI_HEIGHT = (int)(PANEL_HEIGHT * 0.69);
-    
-    /**
-     * Rispettivamente:
-     * - Label che servirà come titolo per il sottopanel dedicato alla creazione delle colonne. Conterrà
-     *   la frase: "CREA COLONNE"
-     * - Label che servirà ad indicare la sezione per il nome della colonna. 
-     *   Conterrà la frase: "NOME COLONNA"
-     * - Label che servirà ad indicare la sezione per la scelta della tipologia della colonna. Conterrà
-     *   la frase: "TIPOLOGIA"
-     * - Label che servirà ad indicare la sezione per la scelta delle caratteristiche della colonna.
-     *   Conterrà la frase: "CARATTERISTICHE"
-     * - Label che intitola il TextArea assegnato per le informazioni aggiuntive dovute alla caratteristica
-     *   Default
-     * - Label che intitola il TextArea assegnato per le informazioni aggiuntive dovute alla caratteristica
-     *   Collate
-     * - Label che intitola il TextArea assegnato per le informazioni aggiuntive dovute alla caratteristica
-     *   Check
-     */
-    private Label lbl_creaColonna, lbl_nomeColonna, lbl_tipologia, lbl_caratteristiche, lbl_aggiungiDettagli,
-    lbl_default, lbl_collate, lbl_check;
+    private final int SOTTOPANNELLI_HEIGHT = (int)(PANEL_HEIGHT * 0.69);
+
+    private Sottopannello sp_creaColonna, sp_default, sp_check, sp_collate;
 
     /**
      * Rispettivamente:
      * - Il sottopanel che si occuperà di creare le colonne. Al suo interno conterrà la label lbl_creaColonna
      *   ed un ulteriore panel che conterrà i RadioButtons per scegliere le caratteristiche della colonna
-     * - L'ulteriore sottopanel che contiene i RadioButtons per scegliere le caratteristiche e la tipologua
-     *   della colonna
-     * - Panel che conterrà i RadioButtons che permetteranno di scegliere le caratteristiche delle colonne
      * - Panel che conterrà i pulsanti per la Creazione della colonna, per il reset delle informazioni e per proseguire nel processo
-     * - Panel che conterrà le informazioni ed il TextArea per l'inserimento del nome della colonna durante la sua creazione
-     * - Panel che conterrà le informazioni ed i RadioButtons per la scelta della tipologia della nuova colonna
-     * - Panel dove verranno richieste le informazioni (se presenti) aggiuntive per la colonna
      */
-    private Panel pnl_creaColonna, pnl_creaColonnaInformazioni, pnl_BtnCaratteristiche, pnl_creaColonnaBtnFinali, 
-    pnl_nomeColonna, pnl_tipologiaColonna, pnl_aggiungiDettagli;
-
-    /**
-     * Istanza della classe TextArea (Progetto.Main.Strumenti.TextArea) che servirà per:
-     * - L'inserimento del nome della colonna che si sta creando. Questa non potrà contenere valori nulli
-     * - L'inserimento delle informazioni per la caratteristica Default
-     * - L'inserimento delle informazioni per la caratteristica Collate
-     * - L'inserimento delle informazioni per la caratteristica Check
-     */
-    private TextArea ta_nomeColonna, ta_default, ta_collate, ta_check;
-
-    /**
-     * Istanza della classe ButtonGroup con lo scopo di riunire tutti i RadioButtons per la scelta della 
-     * tipologia della colonna
-     */
-    private ButtonGroup bg_tipologia;
-
-    /**
-     * Istanza della classe ScrollPane (Progetto.Main.Strumenti.ScrollPane) con lo scopo di contenere il Panel
-     * pnl_creaColonna in modo da garantirgli una barra di scorrimento nel caso si superino le 
-     * dimensioni del panel stesso a causa degli elementi che inseriremo
-     */
-    private ScrollPane sp_creaColonna;
-
-    /**
-     * Array con lo scopo di contenere tutti i RadioButton che creo. L'ordine di questi sarà indicato
-     * dal loro indice
-     */
-    private RadioButton[] radioButtons;
+    private Panel pnl_creaColonna, pnl_creaColonnaBtnFinali;
 
     /**
      * Rispettivamente:
@@ -157,37 +99,6 @@ public class CreaTabella extends JPanel implements ActionListener{
      *   senza però crearla
      */
     private BtnText btn_creaColonna, btn_resetColonna;
-
-    /**
-     * Barra che separa il titolo (lbl_creaColonna) con il Panel (pnl_creaColonneInformazioni)
-     */
-    private BarraDiSeparazione bds_creaColonnaAlta, bds_creaColonnaBassa;
-
-    /**
-     * Array che contiene tutti i nomi dei RadioButton che inseriremo (0 INTEGER, 1 REAL, 2 TEXT, 3 BLOB, 
-     * 4 PRIMARY KEY, 5 UNIQUE, 6 NOT NULL, 7 AUTO INCREMENT, 8 DEFAULT, 9 CHECK, 10 COLLATE)
-     */
-    private static String[] radioButtonNames = {
-        "INTEGER", "REAL", "TEXT", "BLOB", "PRIMARY KEY", "UNIQUE", "NOT NULL",
-        "AUTO INCREMENT", "DEFAULT", "CHECK", "COLLATE"
-    };
-
-    /**
-     * Array che contiene tutte le frasi destionate ad essere i "messaggi" per ogni RadioButton che inseriremo
-     */
-    private static String[] descrizioneRadioButtons = {
-        "Permette l'inserimento dei soli valori numerici interi. <br> <br> Esclude: collate", 
-        "Permette l'inserimento di numeri anche con una parte decimale, con un massimo di 2 cifre dopo la virgola. <br> <br> Esclude: collate | autoincrement", 
-        "Rappresenta stringhe di caratteri ed include spazi, simboli, numeri (trattati come caratteri) e punteggiatura. <br> <br> Esclude: autoincrement",
-        "È usato per memorizzare dati binari senza alcuna conversione o interpretazione, come immagini, file audio, file video e file binari. <br> <br> Esclude: collate | autoincrement | default",
-        "Impone l'inserimento di un record unico e non nullo rispetto agli altri elementi della colonna. <br> <br> Impone: Unique | Not Null <br> Uso: tutte le tipologie",
-        "Assicura che tutti i record di una colonna siano unici, senza duplicati. <br> <br> Impone: nessuna imposizione <br> Uso: tutte le tipologie",
-        "Impedisce a questa colonna di possedere valori nulli. Ogni riga ha, quindi, un valore. <br> <br> Impone: Nessuna imposizione <br> Uso: tutte le tipologie",
-        "Genera automaticamente valori sequenziali unici per la colonna. Ogni nuovo record riceve un valore maggiore del precedente. <br> <br> Impone: Primary Key <br> Uso: Integer",
-        "Specifica un valore predefinito per una colonna se non viene fornito alcun valore durante l'inserimento di un record. <br> <br> Impone: nessuna imposizione <br> Uso: Integer | Real | Text",
-        "impone un vincolo personalizzato su una colonna, assicurando che i dati inseriti soddisfino una determinata condizione <br> <br> Impone: nessuna imposizione <br> Uso: tutte le tipologie",
-        "definisce la modalità di confronto delle stringhe per una colonna di tipo \"TEXT\", influenzando l'ordinamento e le ricerche. <br> <br> Impone: nessuna imposizione <br> Uso: text"
-    };
 
     //********************************* VARIABILI MOSTRA_COLONNE *********************************//
     /**
@@ -207,7 +118,7 @@ public class CreaTabella extends JPanel implements ActionListener{
     /**
      * Barra che separa il titolo (lbl_colonne) con il Panel (pnl_mostraColonne)
      */
-    private BarraDiSeparazione bds_colonneAlta, bds_colonneBassa;
+    
 
     //********************************* VARIABILI CREA_TABELLA *********************************//
 
@@ -221,13 +132,9 @@ public class CreaTabella extends JPanel implements ActionListener{
         dim_pannelli = new Dimension(PANEL_WIDTH, PANEL_HEIGHT);
         dim_sottopannelli = new Dimension(PANEL_WIDTH, SOTTOPANNELLI_HEIGHT);
         dim_label = new Dimension(LABEL_WIDTH, LABEL_HEIGHT);
-        dim_taNomeColonna = new Dimension((int)(LABEL_WIDTH * 0.6), LABEL_HEIGHT);
         dim_creaTabella = new Dimension(PANEL_WIDTH, (int)(PANEL_HEIGHT * 0.2));
-        dim_infoColonna = new Dimension(PANEL_WIDTH, (int)(PANEL_HEIGHT * 0.178));
-        dim_aggiungiDettagli = new Dimension(PANEL_WIDTH, 50);
 
-        bg_tipologia = new ButtonGroup();
-        radioButtons = new RadioButton[radioButtonNames.length];
+        bds = new BarraDiSeparazione(BDS_WIDTH, FOREGROUND_COLOR, true);
 
         setPreferredSize(dim_generale);
         setBackground(BACKGROUND_COLOR);
@@ -265,9 +172,6 @@ public class CreaTabella extends JPanel implements ActionListener{
         lbl_colonne.setForeground(FOREGROUND_COLOR);
         lbl_colonne.setFont(Global.FONT_GRANDE);
 
-        bds_colonneAlta = new BarraDiSeparazione(BDS_WIDTH, FOREGROUND_COLOR, true);
-        bds_colonneBassa = new BarraDiSeparazione(BDS_WIDTH, FOREGROUND_COLOR, true);
-
         pnl_mostraColonne = new JPanel(Global.FL_C_10_10);
         pnl_mostraColonne.setPreferredSize(dim_sottopannelli);
         pnl_mostraColonne.setBackground(BACKGROUND_COLOR);
@@ -282,117 +186,43 @@ public class CreaTabella extends JPanel implements ActionListener{
         pnl_creaTabella.add(btn_creaTabella);
 
         pnl_colonne.add(lbl_colonne);
-        pnl_colonne.add(bds_colonneAlta);
+        pnl_colonne.add(bds);
         pnl_colonne.add(Box.createVerticalStrut(30));
         pnl_colonne.add(pnl_mostraColonne);
-        pnl_colonne.add(bds_colonneBassa);
+        pnl_colonne.add(bds.clone());
         pnl_colonne.add(pnl_creaTabella);
 
     }
 
     private void setUpCreazioneColonne() {
-        /*
-         * Creazione del Panel che conterrà tutti gli elementi per la creazione delle colonne
-         */
 
-        //Creazione del ScrollPane
-        sp_creaColonna = new ScrollPane(dim_sottopannelli.getSize(), Color.WHITE);
-        
-        //Creazione dei Panels
+        //Creazione dei Pannelli e Sottopannelli
         pnl_creaColonna = new Panel(Global.FL_C_10_10, dim_pannelli, BACKGROUND_COLOR);
-        pnl_creaColonnaInformazioni = new Panel(Global.FL_C_10_10, dim_sottopannelli, BACKGROUND_COLOR);
-        pnl_nomeColonna = new Panel(Global.FL_C_0_0, dim_infoColonna, BACKGROUND_COLOR);
-        pnl_tipologiaColonna = new Panel(Global.FL_C_0_0, dim_infoColonna, BACKGROUND_COLOR);
-        pnl_BtnCaratteristiche = new Panel(Global.FL_C_0_0, dim_infoColonna, BACKGROUND_COLOR);
-        pnl_aggiungiDettagli = new Panel(Global.FL_C_10_10, dim_aggiungiDettagli, BACKGROUND_COLOR, false);
-        pnl_creaColonnaBtnFinali = new Panel(Global.FL_C_10_10, dim_creaTabella, BACKGROUND_COLOR);
-
-
-        //Creazione dei Labels
-        lbl_creaColonna = new Label("CREA COLONNE:", Global.FONT_GRANDE, dim_label, FOREGROUND_COLOR);
-        lbl_nomeColonna = new Label("NOME COLONNA:", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR);
-        lbl_tipologia = new Label("TIPOLOGIA:", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR);
-        lbl_caratteristiche = new Label("CARATTERISTICA:", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR);
-        lbl_aggiungiDettagli = new Label("AGGIUNGI DETTAGLI", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR);
-        lbl_default = new Label("ELEMENTO DI DEFAULT:", Global.FONT_PICCOLO, dim_label, FOREGROUND_COLOR);
-        lbl_check = new Label("ELEMENTO DI CHECK:", Global.FONT_PICCOLO, dim_label, FOREGROUND_COLOR);
-        lbl_collate = new Label("ELEMENTO DI COLLATE:", Global.FONT_PICCOLO, dim_label, FOREGROUND_COLOR);
-
-
-        //Creazione delle BarreDiScorrimento
-        bds_creaColonnaAlta = new BarraDiSeparazione(BDS_WIDTH, FOREGROUND_COLOR, true);
-        bds_creaColonnaBassa = new BarraDiSeparazione(BDS_WIDTH, FOREGROUND_COLOR, true);
-
-
-        //Creazione dei TextAreas
-        ta_nomeColonna = new TextArea(Global.FONT_MEDIO, dim_taNomeColonna);
-        ta_nomeColonna.setCharacterLimit(MAX_CHAR_NOME_COLONNA);
-
-        ta_default = new TextArea(Global.FONT_MEDIO, dim_taNomeColonna);
-        ta_default.setCharacterLimit(MAX_CHAR_NOME_COLONNA);
-
-        ta_check = new TextArea(Global.FONT_MEDIO, dim_taNomeColonna);
-        ta_check.setCharacterLimit(MAX_CHAR_NOME_COLONNA);
-
-        ta_collate = new TextArea(Global.FONT_MEDIO, dim_taNomeColonna);
-        ta_collate.setCharacterLimit(MAX_CHAR_NOME_COLONNA);
-
-
-        //Creazione dei RadioButtons
-        for(int i = 0; i < 4; i++) radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], bg_tipologia, this);
         
-        for(int i = 4; i < radioButtonNames.length; i++) {
-            //Gli ultimi tre RadioButton hanno necessità di maggiori informazioni, quini needWord = true
-            if(i >= 8) radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], true, this);
-            else radioButtons[i] = new RadioButton(i, radioButtonNames[i], descrizioneRadioButtons[i], false, this);
-        }
-
+        sp_creaColonna = new Sottopannello(Sottopannello.Tipologia.GENERALE, dim_sottopannelli, BACKGROUND_COLOR, Global.FL_C_10_10, this);
+        sp_default = new Sottopannello(Sottopannello.Tipologia.DEFAULT, dim_sottopannelli, BACKGROUND_COLOR, Global.FL_C_10_10, this);
+        sp_check = new Sottopannello(Sottopannello.Tipologia.CHECK, dim_sottopannelli, BACKGROUND_COLOR, Global.FL_C_10_10, this);
+        sp_collate = new Sottopannello(Sottopannello.Tipologia.COLLATE, dim_sottopannelli, BACKGROUND_COLOR, Global.FL_C_10_10, this);
+        
+        pnl_creaColonnaBtnFinali = new Panel(Global.FL_C_10_10, dim_creaTabella, BACKGROUND_COLOR);
 
         //Creazione dei BtnTexts
         btn_creaColonna = new BtnText(Tipologia.CREA_COLONNA, this, "PROSEGUI");
         btn_resetColonna = new BtnText(Tipologia.RESET_COLONNA, this, "RESET");
         btn_resetColonna.disableButton();
 
-
-        //Aggiunta degli elementi
-        sp_creaColonna.setViewportView(pnl_creaColonnaInformazioni);
-
-        pnl_nomeColonna.add(lbl_nomeColonna);
-        pnl_nomeColonna.add(ta_nomeColonna);
-
-        pnl_tipologiaColonna.add(lbl_tipologia);
-
-        pnl_aggiungiDettagli.add(lbl_aggiungiDettagli);
-        pnl_aggiungiDettagli.add(lbl_default);
-        pnl_aggiungiDettagli.add(ta_default);
-        pnl_aggiungiDettagli.add(lbl_check);
-        pnl_aggiungiDettagli.add(ta_check);
-        pnl_aggiungiDettagli.add(lbl_collate);
-        pnl_aggiungiDettagli.add(ta_collate);
-
-        pnl_creaColonnaBtnFinali.add(btn_creaColonna);
         pnl_creaColonnaBtnFinali.add(btn_resetColonna);
+        pnl_creaColonnaBtnFinali.add(btn_creaColonna);
 
-        pnl_creaColonnaInformazioni.add(pnl_nomeColonna);
-
-        for(int i = 0; i < 4; i++) pnl_tipologiaColonna.add(radioButtons[i]);
-
-        pnl_creaColonnaInformazioni.add(pnl_tipologiaColonna);
-        pnl_BtnCaratteristiche.add(lbl_caratteristiche);
-
-        for(int i = 4; i < radioButtons.length; i++) pnl_BtnCaratteristiche.add(radioButtons[i]);
-
-        pnl_creaColonnaInformazioni.add(pnl_BtnCaratteristiche);
-        pnl_creaColonnaInformazioni.add(pnl_aggiungiDettagli);
-
-        pnl_creaColonna.add(lbl_creaColonna);
-        pnl_creaColonna.add(bds_creaColonnaAlta);
+        pnl_creaColonna.add(new Label("CREA COLONNE:", Global.FONT_GRANDE, dim_label, FOREGROUND_COLOR));
+        pnl_creaColonna.add(bds.clone());
         pnl_creaColonna.add(Box.createVerticalStrut(30));
         pnl_creaColonna.add(sp_creaColonna);
-        pnl_creaColonna.add(bds_creaColonnaBassa);
+        pnl_creaColonna.add(sp_default);
+        pnl_creaColonna.add(sp_check);
+        pnl_creaColonna.add(sp_collate);
+        pnl_creaColonna.add(bds.clone());
         pnl_creaColonna.add(pnl_creaColonnaBtnFinali);
-
-        checkRadioButtonsTipologia();
     }
 
     public void creaTabella() {
@@ -401,116 +231,200 @@ public class CreaTabella extends JPanel implements ActionListener{
 
     public void reset() {
 
-        ta_nomeColonna.setText("");
-        radioButtons[0].setSelected(true);
-
-        for(int i = 4; i < radioButtons.length; i++) {
-            radioButtons[i].setSelected(false);
-        }
-
-        aggiungiDettagli();
-
-        checkRadioButtonCaratteristica();
+        //TODO reset button
     }
 
-    /**
-     * Funzione richiamata solo nel caso in cui tra le caratteristiche scelte fosse necessario
-     * aggiungere ulteriori dettagli
-     */
-    public void aggiungiDettagli() {
+    public void prosegui() {
 
-        double changeHeight = 0;
+        if(sp_creaColonna.isVisible()) {
+            
+            sp_creaColonna.setVisible(false);
+            sp_default.setVisible(true);
 
-        if(radioButtons[8].isSelected()) changeHeight += dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60;
-        if(radioButtons[9].isSelected()) changeHeight += dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60;
-        if(radioButtons[10].isSelected()) changeHeight += dim_label.getHeight() + dim_taNomeColonna.getHeight() + 60;
+        } else if(sp_default.isVisible()) {
 
-        pnl_aggiungiDettagli.setVisible(radioButtons[8].isSelected() || radioButtons[9].isSelected() || radioButtons[10].isSelected());
+            sp_default.setVisible(false);
+            sp_check.setVisible(true);
 
-        lbl_default.setVisible(radioButtons[8].isSelected());
-        ta_default.setVisible(radioButtons[8].isSelected());
+        } else if(sp_check.isVisible()) {
 
-        lbl_check.setVisible(radioButtons[9].isSelected());
-        ta_check.setVisible(radioButtons[9].isSelected());
+            sp_check.setVisible(false);
+            sp_collate.setVisible(true);
 
-        lbl_collate.setVisible(radioButtons[10].isSelected());
-        ta_collate.setVisible(radioButtons[10].isSelected());
+        } else {
 
+            System.out.println("Creazione colonna avvenuta");
 
-        dim_aggiungiDettagli.setSize(dim_aggiungiDettagli.getWidth(), changeHeight);
-        dim_sottopannelli.setSize(dim_sottopannelli.getWidth(), SOTTOPANNELLI_HEIGHT + changeHeight);
+        }
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        RadioButton rb = (RadioButton)e.getSource();
         
-        checkRadioButtonCaratteristica();
+    }
+}
 
-        if(rb == radioButtons[8] || rb == radioButtons[9] || rb == radioButtons[10]) aggiungiDettagli();
+class Sottopannello extends Panel {
 
-        btn_resetColonna.ableButton();
+    public enum Tipologia {
+        GENERALE,
+        DEFAULT,
+        CHECK,
+        COLLATE
     }
 
-    private void checkRadioButtonsTipologia() {
-        if(radioButtons[0].isSelected()) {
-            
-            radioButtons[8].abilita();
-            radioButtons[7].abilita();
-            
-            radioButtons[10].disabilita();
-
-        } else if(radioButtons[1].isSelected()) {
-
-            radioButtons[8].abilita();
-            
-            radioButtons[7].disabilita();
-            radioButtons[10].disabilita();
-
-        } else if(radioButtons[2].isSelected()) {
-            
-            radioButtons[8].abilita();
-            radioButtons[10].abilita();
-
-            
-            radioButtons[7].disabilita();
-        } else {
-            
-            radioButtons[7].disabilita();
-            radioButtons[8].disabilita();
-            radioButtons[10].disabilita();
-        }
-
-        aggiornaRadioButtons();
-        aggiungiDettagli();
+    private enum RadioNamesTyps {
+        INTEGER,
+        REAL,
+        TEXT,
+        BLOB
     }
 
-    private void checkRadioButtonCaratteristica() {
-        
-        if(radioButtons[7].isSelected()) {
-
-            radioButtons[4].setSelected(true);
-
-        } 
-        
-        if(radioButtons[4].isSelected()) {
-
-            radioButtons[5].setSelected(true);
-            radioButtons[6].setSelected(true);
-
-        }
-
-        checkRadioButtonsTipologia();
+    private enum RadioNamesBeh {
+        PRIMARY_KEY,
+        UNIUE,
+        NOT_NULL,
+        AUTO_INCREMENT,
+        DEFAULT,
+        CHECK,
+        COLLATE
     }
 
-    private void aggiornaRadioButtons() {
-        
-        for(int i = 0; i < radioButtons.length; i++) {
+    //Variabili final
+    private final Color BACKGROUND_COLOR = Global.COLORE_AVVISO;
+    private final Color FOREGROUND_COLOR = Color.WHITE;
 
-            if(radioButtons[i].isSelected()) radioButtons[i].setIcon(Global.getIcon("RadioButtonSelected.png", 10));
-            else radioButtons[i].setIcon(Global.getIcon("RadioButtonNotSelected.png", 10));
+    private final int GENERAL_WIDTH = (int)(Global.FRAME_WIDTH * 0.7);
+    private final int GENERAL_HEIGHT = (int)(Global.FRAME_HEIGHT * 0.72);
+    private final int PANEL_WIDTH = (int)(GENERAL_WIDTH * 0.46);
+    private final int PANEL_HEIGHT = (int)(GENERAL_HEIGHT * 0.9);
+    private final int LABEL_HEIGHT = 30;
 
-            if(!radioButtons[i].isEnabled()) radioButtons[i].setIcon(Global.getIcon("Annulla.png", 10));
+    private final int MAX_CHARACTERS_LIMIT_TEXT_AREA = 23;
+
+    //Variabili normali
+    private CreaTabella ct;
+
+    private Dimension dim_label, dim_textArea, dim_infoPanel;
+
+    private TextArea ta_nomeColonna, ta_default;
+    private Panel pnl_nomeColonna, pnl_tipoRadioButton, pnl_carattRadioButton, pnl_default, pnl_recapColonna;
+
+    private RadioButton[] radioButtonsTyps, radioButtonsBeh;
+    private ButtonGroup bg;
+
+    private static String[] descRadioButtons = {
+        "Permette l'inserimento dei soli valori numerici interi. <br> <br> Esclude: collate", 
+        "Permette l'inserimento di numeri anche con una parte decimale, con un massimo di 2 cifre dopo la virgola. <br> <br> Esclude: collate | autoincrement", 
+        "Rappresenta stringhe di caratteri ed include spazi, simboli, numeri (trattati come caratteri) e punteggiatura. <br> <br> Esclude: autoincrement",
+        "È usato per memorizzare dati binari senza alcuna conversione o interpretazione, come immagini, file audio, file video e file binari. <br> <br> Esclude: collate | autoincrement | default",
+        "Impone l'inserimento di un record unico e non nullo rispetto agli altri elementi della colonna. <br> <br> Impone: Unique | Not Null <br> Uso: tutte le tipologie",
+        "Assicura che tutti i record di una colonna siano unici, senza duplicati. <br> <br> Impone: nessuna imposizione <br> Uso: tutte le tipologie",
+        "Impedisce a questa colonna di possedere valori nulli. Ogni riga ha, quindi, un valore. <br> <br> Impone: Nessuna imposizione <br> Uso: tutte le tipologie",
+        "Genera automaticamente valori sequenziali unici per la colonna. Ogni nuovo record riceve un valore maggiore del precedente. <br> <br> Impone: Primary Key <br> Uso: Integer",
+        "Specifica un valore predefinito per una colonna se non viene fornito alcun valore durante l'inserimento di un record. <br> <br> Impone: nessuna imposizione <br> Uso: Integer | Real | Text",
+        "impone un vincolo personalizzato su una colonna, assicurando che i dati inseriti soddisfino una determinata condizione <br> <br> Impone: nessuna imposizione <br> Uso: tutte le tipologie",
+        "definisce la modalità di confronto delle stringhe per una colonna di tipo \"TEXT\", influenzando l'ordinamento e le ricerche. <br> <br> Impone: nessuna imposizione <br> Uso: text"
+    };
+
+    //Costruttore di Sottopannello visibile
+    public Sottopannello(Tipologia tip, Dimension dim, Color bg, LayoutManager layout, CreaTabella ct) {
+        super(layout, dim, bg);
+
+        this.ct = ct;
+        this.dim_label = new Dimension(PANEL_WIDTH, LABEL_HEIGHT);
+        this.dim_textArea = new Dimension((int)(PANEL_WIDTH * 0.6), LABEL_HEIGHT);
+        this.dim_infoPanel = new Dimension(PANEL_WIDTH, (int)(PANEL_HEIGHT * 0.178));
+
+        switch (tip) {
+            case GENERALE: setupGenerale();
+            break;
+            case DEFAULT: setupDefault();
+            break;
+            case CHECK: setupCheck();
+            break;
+            case COLLATE: setupCollate();
+            break;
         }
+    }
+
+    //Funzioni per la creazione del sottopannello Generale
+    private void setupGenerale() {
+
+        this.pnl_nomeColonna = new Panel(Global.FL_C_0_0, dim_infoPanel, BACKGROUND_COLOR);
+        this.pnl_tipoRadioButton = pnl_nomeColonna.clone();
+        this.pnl_carattRadioButton = pnl_nomeColonna.clone();
+
+        //Setup label e text area per l'inserimento del nome delle colonne
+        pnl_nomeColonna.add(new Label("NOME COLONNA:", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR));
+
+        ta_nomeColonna = new TextArea(Global.FONT_MEDIO, dim_textArea);
+        ta_nomeColonna.setCharacterLimit(MAX_CHARACTERS_LIMIT_TEXT_AREA);
+
+        pnl_nomeColonna.add(ta_nomeColonna);
+        
+        //Setup radioButtons per la tipologia e le caratteristiche delle colonne
+        setupRadioButtons();
+
+
+        add(pnl_nomeColonna);
+        add(pnl_tipoRadioButton);
+        add(pnl_carattRadioButton);
+    }
+    private void setupRadioButtons() {
+        radioButtonsTyps = new RadioButton[RadioNamesTyps.values().length];
+        radioButtonsBeh = new RadioButton[RadioNamesBeh.values().length];
+
+        bg = new ButtonGroup();
+
+        //Setup RadioButtons per la tipologia delle colonne
+        pnl_tipoRadioButton.add(new Label("CARATTERISTICA:", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR));
+
+        for(int i = 0; i < radioButtonsTyps.length; i++) {
+            radioButtonsTyps[i] = new RadioButton(i, RadioNamesTyps.values()[i].toString().replace('_', ' '), descRadioButtons[i], bg, ct);
+
+            pnl_tipoRadioButton.add(radioButtonsTyps[i]);
+        }
+
+        //Setup RadioButtons per le caratteristiche delle colonne
+        pnl_carattRadioButton.add(new Label("TIPOLOGIA:", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR));
+
+        for(int i = 0; i < radioButtonsBeh.length; i++) {
+            if(i >= 4) radioButtonsBeh[i] = new RadioButton(i, RadioNamesBeh.values()[i].toString().replace('_', ' '), descRadioButtons[i + radioButtonsTyps.length], true, ct);
+            else radioButtonsBeh[i] = new RadioButton(i, RadioNamesBeh.values()[i].toString().replace('_', ' '), descRadioButtons[i + radioButtonsTyps.length], false, ct);
+
+            pnl_carattRadioButton.add(radioButtonsBeh[i]);
+        }
+    }
+
+
+    //Funzioni per la creazione del sottopannello Default
+    private void setupDefault() {
+
+        setVisible(false);
+
+        pnl_default = new Panel(Global.FL_C_0_0, dim_infoPanel, BACKGROUND_COLOR);
+        
+        ta_default = new TextArea(Global.FONT_MEDIO, dim_textArea);
+        ta_default.setCharacterLimit(MAX_CHARACTERS_LIMIT_TEXT_AREA);
+
+        pnl_default.add(new Label("VALORE DEFAULT", Global.FONT_MEDIO, dim_label, FOREGROUND_COLOR));
+        pnl_default.add(ta_default);
+
+        add(pnl_default);
+    }
+
+    //Funzioni per la creazione del sottopannello Check
+    private void setupCheck() {
+        
+        setVisible(false);
+    }
+
+    //Funzioni per la creazione del sottopannello Collate
+    private void setupCollate() {
+        setVisible(false);
+
+        add(new DropdownMenu(null, dim_label));
     }
 }

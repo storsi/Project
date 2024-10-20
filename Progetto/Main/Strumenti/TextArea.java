@@ -48,6 +48,10 @@ public class TextArea extends JTextArea implements KeyListener{
         return getText() == null || getText().equals("");
     }
 
+    public TextArea clone() {
+        return new TextArea(getFont(), getPreferredSize());
+    }
+
     public void changeColor(Color background, Color accessories) {
         if(background != null) {
             setOpaque(true);

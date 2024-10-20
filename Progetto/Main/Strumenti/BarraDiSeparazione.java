@@ -42,6 +42,10 @@ public class BarraDiSeparazione extends JPanel{
         repaint();
     }
 
+    public BarraDiSeparazione clone() {
+        return new BarraDiSeparazione(width, getBackground(), isVisible());
+    }
+
     @Override
     public int getWidth() {
         return width;

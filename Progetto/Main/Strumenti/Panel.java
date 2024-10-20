@@ -22,4 +22,8 @@ public class Panel extends JPanel{
         setBackground(background);
         setVisible(visible);
     }
+
+    public Panel clone() {
+        return new Panel(getLayout(), getPreferredSize(), getBackground());
+    }
 }
